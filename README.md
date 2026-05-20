@@ -6,7 +6,7 @@ Dự án xây dựng phần mềm quản lý quán cà phê, hỗ trợ nhân vi
 ## 🛠️ Công cụ & Công nghệ sử dụng
 * **Ngôn ngữ:** Java
 * **Giao diện người dùng:** Java Swing
-* **Cơ sở dữ liệu:** SQL (Cấu trúc bảng nằm trong file `database.sql`)
+* **Cơ sở dữ liệu:** SQL Sever (Cấu trúc bảng nằm trong file `database.sql`)
 * **Quản lý mã nguồn:** Git & GitHub
 * **Kiến trúc & Tiêu chuẩn:** * Mô hình phân lớp (Controller - Service - Repository).
   * Lập trình hướng đối tượng (OOP).
