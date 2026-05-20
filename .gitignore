@@ -1,0 +1,13 @@
+# 1. BỎ QUA FILE BIÊN DỊCH (Quan trọng nhất)
+# Mục này chứa code đã được máy dịch ra (.class), mỗi máy một khác nên không được đưa lên
+bin/
+
+# 2. BỎ QUA CẤU HÌNH CỦA ECLIPSE
+# Tránh việc khi mang sang máy khác bị xung đột cấu hình phần mềm
+.settings/
+.classpath
+.project
+
+# 3. BỎ QUA CÁC FILE RÁC CỦA HỆ ĐIỀU HÀNH TỰ SINH RA
+.DS_Store
+Thumbs.db
