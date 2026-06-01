@@ -239,3 +239,31 @@ VALUES
 
 ('ORD04', N'Bánh sừng trâu', 20000, 2);
 GO
+-- Truy vấn dữ liệu
+select * from OrderDrink
+select * from OrderFood
+select * from Employee
+select * from Orders
+select * from Customer
+select * from CoffeeTable
+
+-- Chi tiết đơn hàng
+SELECT 
+    N'Nước uống' AS Loai, 
+    DrinkName AS TenMon, 
+    Quantity AS SoLuong, 
+    Price AS DonGia, 
+    (Quantity * Price) AS ThanhTien
+FROM OrderDrink
+WHERE OrderID = 'ORD01'
+
+UNION ALL
+
+SELECT 
+    N'Đồ ăn' AS Loai, 
+    FoodName AS TenMon, 
+    Quantity AS SoLuong, 
+    Price AS DonGia, 
+    (Quantity * Price) AS ThanhTien
+FROM OrderFood
+WHERE OrderID = 'ORD01';
