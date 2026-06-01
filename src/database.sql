@@ -1,269 +1,212 @@
--- =============================================
--- XÓA DATABASE NẾU ĐÃ TỒN TẠI
--- =============================================
-USE master;
-GO
+-- ===================================================================
+-- BƯỚC 1: TẠO CÁC BẢNG ĐỘC LẬP (Không chứa khóa ngoại)
+-- ===================================================================
 
-IF EXISTS (
-    SELECT * FROM sys.databases
-    WHERE name = 'CoffeeShopManagement_JSON'
-)
-BEGIN
-    ALTER DATABASE CoffeeShopManagement_JSON
-    SET SINGLE_USER
-    WITH ROLLBACK IMMEDIATE;
-
-    DROP DATABASE CoffeeShopManagement_JSON;
-END
-GO
-
--- =============================================
--- TẠO DATABASE
--- =============================================
-CREATE DATABASE CoffeeShopManagement_JSON;
-GO
-
-USE CoffeeShopManagement_JSON;
-GO
-
--- =============================================
--- 1. TABLE CoffeeTable
--- =============================================
-CREATE TABLE CoffeeTable (
-    TableID VARCHAR(20) PRIMARY KEY,
-
-    SeatCount INT NOT NULL,
-
-    Status NVARCHAR(50)
-    DEFAULT N'Trống'
-    CHECK (
-        Status IN (
-            N'Trống',
-            N'Đang dùng',
-            N'Đặt trước'
-        )
-    ),
-
-    Location NVARCHAR(100)
+-- 1. Bảng Chức Vụ
+CREATE TABLE ChucVu (
+    MaChucVu VARCHAR(50) PRIMARY KEY,
+    TenChucVu NVARCHAR(100)
+        CHECK (TenChucVu IN (
+            N'Admin',
+            N'Quản lý',
+            N'Thu ngân',
+            N'Phục vụ',
+            N'Pha chế',
+            N'Đầu bếp',
+            N'Phụ bếp',
+            N'Giám sát ca',
+            N'Giao hàng'
+        ))
 );
-GO
 
--- =============================================
--- 2. TABLE Customer
--- =============================================
-CREATE TABLE Customer (
-    CustomerID VARCHAR(20) PRIMARY KEY,
-
-    CustomerName NVARCHAR(100) NOT NULL,
-
-    PhoneNumber VARCHAR(15),
-
-    Address NVARCHAR(255)
+-- 2. Bảng Khách Hàng
+CREATE TABLE KhachHang (
+    MaKhachHang VARCHAR(50) PRIMARY KEY,
+    TenKhachHang NVARCHAR(100) NOT NULL,
+    SoDienThoai VARCHAR(15),
+    DiaChi NVARCHAR(255)
 );
-GO
 
--- =============================================
--- 3. TABLE Employee
--- =============================================
-CREATE TABLE Employee (
-    EmployeeID VARCHAR(20) PRIMARY KEY,
-
-    EmployeeName NVARCHAR(100) NOT NULL,
-
-    PhoneNumber VARCHAR(15),
-
-    Position NVARCHAR(50),
-
-    Salary DECIMAL(18,2)
+-- 3. Bảng Bàn Ăn
+CREATE TABLE BanAn (
+    MaBanAn VARCHAR(50) PRIMARY KEY,
+    SoGhe INT,
+    TrangThai NVARCHAR(50) DEFAULT N'Trống'
+        CHECK (TrangThai IN (N'Trống', N'Đang dùng', N'Đặt trước')),
+    ViTri NVARCHAR(100)
 );
-GO
 
--- =============================================
--- 4. TABLE Orders
--- =============================================
-CREATE TABLE Orders (
-    OrderID VARCHAR(20) PRIMARY KEY,
-
-    TableID VARCHAR(20) NOT NULL,
-
-    CustomerID VARCHAR(20),
-
-    EmployeeID VARCHAR(20),
-
-    TotalAmount DECIMAL(18,2),
-
-    Status NVARCHAR(50)
-    DEFAULT N'Đang phục vụ'
-    CHECK (
-        Status IN (
-            N'Đang phục vụ',
-            N'Đã thanh toán',
-            N'Hủy'
-        )
-    ),
-
-    CreatedAt DATETIME DEFAULT GETDATE(),
-
-    FOREIGN KEY (TableID)
-        REFERENCES CoffeeTable(TableID),
-
-    FOREIGN KEY (CustomerID)
-        REFERENCES Customer(CustomerID),
-
-    FOREIGN KEY (EmployeeID)
-        REFERENCES Employee(EmployeeID)
+-- 4. Bảng Sản Phẩm
+CREATE TABLE SanPham (
+    MaSanPham VARCHAR(50) PRIMARY KEY,
+    TenSanPham NVARCHAR(255) NOT NULL,
+    SoLuong INT,
+    Loai NVARCHAR(100),
+    GiaBan DECIMAL(18,2),
+    TrangThai NVARCHAR(50) DEFAULT N'Còn bán'
+        CHECK (TrangThai IN (
+            N'Còn bán',
+            N'Hết hàng',
+            N'Ngừng kinh doanh'
+        ))
 );
-GO
 
--- =============================================
--- 5. TABLE OrderDrink
--- =============================================
-CREATE TABLE OrderDrink (
-    DrinkID INT IDENTITY(1,1) PRIMARY KEY,
+-- ===================================================================
+-- BƯỚC 2: TẠO CÁC BẢNG PHỤ THUỘC (Có chứa khóa ngoại - Foreign Key)
+-- ===================================================================
 
-    OrderID VARCHAR(20) NOT NULL,
-
-    DrinkName NVARCHAR(100) NOT NULL,
-
-    Price DECIMAL(18,2) NOT NULL,
-
-    Quantity INT NOT NULL,
-
-    FOREIGN KEY (OrderID)
-        REFERENCES Orders(OrderID)
-        ON DELETE CASCADE
+-- 5. Bảng Tài Khoản (Phụ thuộc vào bảng ChucVu)
+CREATE TABLE TaiKhoan (
+    MaTaiKhoan VARCHAR(50) PRIMARY KEY,
+    TenTaiKhoan VARCHAR(100) NOT NULL,
+    MatKhau VARCHAR(255) NOT NULL,
+    HoTen NVARCHAR(100),
+    VaiTro NVARCHAR(50),
+    Luong DECIMAL(18, 2),
+    MaChucVu VARCHAR(50),
+    
+    -- Khai báo khóa ngoại
+    FOREIGN KEY (MaChucVu) REFERENCES ChucVu(MaChucVu)
 );
-GO
 
--- =============================================
--- 6. TABLE OrderFood
--- =============================================
-CREATE TABLE OrderFood (
-    FoodID INT IDENTITY(1,1) PRIMARY KEY,
+-- 6. Bảng Hóa Đơn (Phụ thuộc vào TaiKhoan, KhachHang, BanAn)
+CREATE TABLE HoaDon (
+    MaHoaDon VARCHAR(50) PRIMARY KEY,
+    TongTien DECIMAL(18,2),
+    TrangThai NVARCHAR(50) DEFAULT N'Đang phục vụ'
+        CHECK (TrangThai IN (N'Đang phục vụ', N'Đã thanh toán', N'Hủy')),
+    NgayLap DATETIME,
+    MaTaiKhoan VARCHAR(50),
+    MaKhachHang VARCHAR(50),
+    MaBanAn VARCHAR(50),
 
-    OrderID VARCHAR(20) NOT NULL,
-
-    FoodName NVARCHAR(100) NOT NULL,
-
-    Price DECIMAL(18,2) NOT NULL,
-
-    Quantity INT NOT NULL,
-
-    FOREIGN KEY (OrderID)
-        REFERENCES Orders(OrderID)
-        ON DELETE CASCADE
+    FOREIGN KEY (MaTaiKhoan) REFERENCES TaiKhoan(MaTaiKhoan),
+    FOREIGN KEY (MaKhachHang) REFERENCES KhachHang(MaKhachHang),
+    FOREIGN KEY (MaBanAn) REFERENCES BanAn(MaBanAn)
 );
-GO
 
--- =============================================
--- INSERT DATA: CoffeeTable
--- =============================================
-INSERT INTO CoffeeTable
-(TableID, SeatCount, Status, Location)
-VALUES
-('BAN01', 2, N'Trống', N'Tầng 1 - Cạnh cửa sổ'),
-('BAN02', 4, N'Đang dùng', N'Tầng 1 - Trung tâm'),
-('BAN03', 6, N'Đặt trước', N'Tầng 2 - Ban công'),
-('BAN04', 2, N'Trống', N'Tầng 2 - Góc yên tĩnh'),
-('BAN05', 8, N'Đang dùng', N'Tầng 1 - Khu gia đình');
-GO
+-- 7. Bảng Chi Tiết Hóa Đơn (Phụ thuộc vào HoaDon và SanPham)
+-- Lưu ý: Bảng này dùng khóa chính kép (Composite Key) gồm MaHoaDon và MaSanPham
+CREATE TABLE ChiTietHoaDon (
+    MaHoaDon VARCHAR(50),
+    MaSanPham VARCHAR(50),
+    SoLuong INT,
+    DonGia DECIMAL(18, 2),
+    ThanhTien DECIMAL(18, 2),
+    
+    -- Khai báo khóa chính kép
+    PRIMARY KEY (MaHoaDon, MaSanPham),
+    
+    -- Khai báo các khóa ngoại
+    FOREIGN KEY (MaHoaDon) REFERENCES HoaDon(MaHoaDon),
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+);
 
--- =============================================
--- INSERT DATA: Customer
--- =============================================
-INSERT INTO Customer
-(CustomerID, CustomerName, PhoneNumber, Address)
-VALUES
-('KH01', N'Nguyễn Văn An', '0901234567', N'Cầu Giấy, Hà Nội'),
-('KH02', N'Trần Thị Bình', '0912345678', N'Đống Đa, Hà Nội'),
-('KH03', N'Lê Minh Hoàng', '0988888888', N'Hà Đông, Hà Nội'),
-('KH04', N'Phạm Thu Hà', '0977777777', N'Long Biên, Hà Nội');
-GO
+-- =========================
+-- CHỨC VỤ
+-- =========================
+INSERT INTO ChucVu VALUES ('CV01', N'Admin');
+INSERT INTO ChucVu VALUES ('CV02', N'Quản lý');
+INSERT INTO ChucVu VALUES ('CV03', N'Thu ngân');
+INSERT INTO ChucVu VALUES ('CV04', N'Phục vụ');
+INSERT INTO ChucVu VALUES ('CV05', N'Pha chế');
 
--- =============================================
--- INSERT DATA: Employee
--- =============================================
-INSERT INTO Employee
-(EmployeeID, EmployeeName, PhoneNumber, Position, Salary)
-VALUES
-('NV01', N'Lê Minh Cường', '0987654321', N'Thu ngân', 7000000),
-('NV02', N'Phạm Thu Dung', '0976543210', N'Phục vụ', 5000000),
-('NV03', N'Nguyễn Quốc Huy', '0966666666', N'Pha chế', 6500000),
-('NV04', N'Trịnh Văn Nam', '0955555555', N'Quản lý', 12000000);
-GO
+-- =========================
+-- TÀI KHOẢN
+-- =========================
+INSERT INTO TaiKhoan
+VALUES ('TK01', 'admin', '123456', N'Nguyễn Văn Admin', N'Admin', 20000000, 'CV01');
+INSERT INTO TaiKhoan
+VALUES ('TK02', 'manager01', '123456', N'Trần Thị Quản Lý', N'Nhân viên', 15000000, 'CV02');
+INSERT INTO TaiKhoan
+VALUES ('TK03', 'cashier01', '123456', N'Lê Văn Thu Ngân', N'Nhân viên', 10000000, 'CV03');
+INSERT INTO TaiKhoan
+VALUES ('TK04', 'staff01', '123456', N'Phạm Văn Phục Vụ', N'Nhân viên', 8000000, 'CV04');
+INSERT INTO TaiKhoan
+VALUES ('TK05', 'barista01', '123456', N'Hoàng Văn Pha Chế', N'Nhân viên', 9000000, 'CV05');
+-- =========================
+-- KHÁCH HÀNG
+-- =========================
+INSERT INTO KhachHang
+VALUES ('KH01', N'Nguyễn Minh Anh', '0988123456', N'Hà Nội');
+INSERT INTO KhachHang
+VALUES ('KH02', N'Trần Văn Bình', '0977234567', N'Hà Nội');
+INSERT INTO KhachHang
+VALUES ('KH03', N'Lê Thị Hương', '0966345678', N'Hà Nội');
+-- =========================
+-- BÀN ĂN
+-- =========================
+INSERT INTO BanAn
+VALUES ('BA01', 2, N'Trống', N'Tầng 1');
+INSERT INTO BanAn
+VALUES ('BA02', 4, N'Đang dùng', N'Tầng 1');
+INSERT INTO BanAn
+VALUES ('BA03', 6, N'Đặt trước', N'Tầng 2');
+INSERT INTO BanAn
+VALUES ('BA04', 2, N'Trống', N'Tầng 2');
+INSERT INTO BanAn
+VALUES ('BA05', 4, N'Trống', N'Sân vườn');
+-- =========================
+-- SẢN PHẨM
+-- =========================
+INSERT INTO SanPham
+VALUES ('SP01', N'Cà phê đen', 100, N'Cà phê', 25000, N'Còn bán');
+INSERT INTO SanPham
+VALUES ('SP02', N'Cà phê sữa', 0, N'Cà phê', 30000, N'Hết hàng');
+INSERT INTO SanPham
+VALUES ('SP03', N'Bạc xỉu', 50, N'Cà phê', 35000, N'Còn bán');
+INSERT INTO SanPham
+VALUES ('SP04', N'Trà đào cam sả', 0, N'Trà', 45000, N'Hết hàng');
+INSERT INTO SanPham
+VALUES ('SP05', N'Trà chanh', 20, N'Trà', 25000, N'Còn bán');
+INSERT INTO SanPham
+VALUES ('SP06', N'Sinh tố xoài', 10, N'Sinh tố', 50000, N'Còn bán');
+INSERT INTO SanPham
+VALUES ('SP07', N'Bánh Tiramisu', 0, N'Bánh ngọt', 55000, N'Ngừng kinh doanh');
+-- =========================
+-- HÓA ĐƠN
+-- =========================
+INSERT INTO HoaDon
+VALUES ('HD01', 85000, N'Đã thanh toán', GETDATE(), 'TK03', 'KH01', 'BA01');
+INSERT INTO HoaDon
+VALUES ('HD02', 70000, N'Đang phục vụ', GETDATE(), 'TK03', 'KH02', 'BA02');
+-- =========================
+-- CHI TIẾT HÓA ĐƠN
+-- =========================
+INSERT INTO ChiTietHoaDon
+VALUES ('HD01', 'SP01', 1, 25000, 25000);
+INSERT INTO ChiTietHoaDon
+VALUES ('HD01', 'SP04', 1, 45000, 45000);
+INSERT INTO ChiTietHoaDon
+VALUES ('HD01', 'SP08', 1, 15000, 15000);
+INSERT INTO ChiTietHoaDon
+VALUES ('HD02', 'SP02', 1, 30000, 30000);
+INSERT INTO ChiTietHoaDon
+VALUES ('HD02', 'SP03', 1, 35000, 35000);
 
--- =============================================
--- INSERT DATA: Orders
--- =============================================
-INSERT INTO Orders
-(OrderID, TableID, CustomerID, EmployeeID, TotalAmount, Status)
-VALUES
-('ORD01', 'BAN02', 'KH01', 'NV01', 115000, N'Đang phục vụ'),
+-- Xem danh sách chức vụ
+SELECT * FROM ChucVu;
+-- Xem danh sách khách hàng
+SELECT * FROM KhachHang;
+-- Xem danh sách bàn ăn/bàn cà phê
+SELECT * FROM BanAn;
+-- Xem danh sách sản phẩm (Menu)
+SELECT * FROM SanPham;
+-- Xem danh sách tài khoản/nhân sự
+SELECT * FROM TaiKhoan;
+-- Xem danh sách hóa đơn tổng quan
+SELECT * FROM HoaDon;
+-- Xem chi tiết các món trong hóa đơn
+SELECT * FROM ChiTietHoaDon;
 
-('ORD02', 'BAN01', NULL, 'NV02', 45000, N'Đã thanh toán'),
-
-('ORD03', 'BAN05', 'KH03', 'NV01', 245000, N'Đang phục vụ'),
-
-('ORD04', 'BAN03', 'KH02', 'NV04', 80000, N'Hủy');
-GO
-
--- =============================================
--- INSERT DATA: OrderDrink
--- =============================================
-INSERT INTO OrderDrink
-(OrderID, DrinkName, Price, Quantity)
-VALUES
-
-('ORD01', N'Cà phê sữa đá', 35000, 2),
-('ORD01', N'Trà đào cam sả', 45000, 1),
-
-('ORD02', N'Sinh tố xoài', 45000, 1),
-
-('ORD03', N'Latte', 50000, 2),
-('ORD03', N'Cappuccino', 55000, 1),
-
-('ORD04', N'Trà vải', 40000, 2);
-GO
-
--- =============================================
--- INSERT DATA: OrderFood
--- =============================================
-INSERT INTO OrderFood
-(OrderID, FoodName, Price, Quantity)
-VALUES
-
-('ORD01', N'Bánh tiramisu', 30000, 1),
-
-('ORD03', N'Khoai tây chiên', 45000, 2),
-('ORD03', N'Bánh mì bơ tỏi', 35000, 1),
-
-('ORD04', N'Bánh sừng trâu', 20000, 2);
-GO
--- Truy vấn dữ liệu
-select * from OrderDrink
-select * from OrderFood
-select * from Employee
-select * from Orders
-select * from Customer
-select * from CoffeeTable
-
--- Chi tiết đơn hàng
-SELECT 
-    N'Nước uống' AS Loai, 
-    DrinkName AS TenMon, 
-    Quantity AS SoLuong, 
-    Price AS DonGia, 
-    (Quantity * Price) AS ThanhTien
-FROM OrderDrink
-WHERE OrderID = 'ORD01'
-
-UNION ALL
-
-SELECT 
-    N'Đồ ăn' AS Loai, 
-    FoodName AS TenMon, 
-    Quantity AS SoLuong, 
-    Price AS DonGia, 
-    (Quantity * Price) AS ThanhTien
-FROM OrderFood
-WHERE OrderID = 'ORD01';
+-- Bước 1: Xóa bảng chi tiết (bảng con thấp nhất)
+DELETE FROM ChiTietHoaDon;
+-- Bước 2: Xóa bảng hóa đơn (bảng chứa khóa ngoại trỏ về Khách hàng, Bàn, Tài khoản)
+DELETE FROM HoaDon;
+-- Bước 3: Xóa bảng tài khoản (bảng chứa khóa ngoại trỏ về Chức vụ)
+DELETE FROM TaiKhoan;
+-- Bước 4: Xóa các bảng độc lập (Xóa bảng nào trước cũng được)
+DELETE FROM SanPham;
+DELETE FROM KhachHang;
+DELETE FROM BanAn;
+DELETE FROM ChucVu;
