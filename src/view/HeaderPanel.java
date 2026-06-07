@@ -8,16 +8,16 @@ public class HeaderPanel extends JPanel {
     public HeaderPanel(MainFrame mainFrame) {
     	setBackground(new Color(0x120A04));
     	
-    	// Cố định chiều cao của Header là 120px
-    	setPreferredSize(new Dimension(1200, 120));
     	
-    	// 1. Tạo viền CHỈ Ở PHÍA DƯỚI (MatteBorder: top=0, left=0, bottom=1, right=0)
+    	setPreferredSize(new Dimension(1200, 65));
+    	
+    	
     	Border bottomBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0x9C8A7A));
     	
-    	// 2. Lấy lại phần viền đệm khoảng cách (Padding) cũ
+    	
     	Border emptyBorder = BorderFactory.createEmptyBorder(10, 40, 10, 40);
     	
-    	// 3. Gộp cả 2 viền lại (bottomBorder ở ngoài, emptyBorder ở trong)
+    	
     	setBorder(BorderFactory.createCompoundBorder(bottomBorder, emptyBorder));
     	
         setLayout(new GridBagLayout());
@@ -35,7 +35,7 @@ public class HeaderPanel extends JPanel {
         Logo.add(textPanel, BorderLayout.CENTER);
         
         JLabel tittle = new JLabel("COFFEE SHOP");
-        tittle.setFont(new Font("Arial", Font.BOLD, 36));
+        tittle.setFont(new Font("Arial", Font.BOLD, 24));
         tittle.setForeground(new Color(0xE8C99A));
         textPanel.add(tittle);
         

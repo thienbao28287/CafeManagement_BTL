@@ -1,36 +1,37 @@
+
 package view;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
-    
     private CardLayout outerCardLayout;
     private JPanel outerPanel;
     private CardLayout innerCardLayout;
     private JPanel innerContentPanel;
+    private SidebarPanel sidebarPanel;
+    private LoginPanel loginPanel; 
 
     public MainFrame() {
         setTitle("COFFEE SHOP MANAGEMENT SYSTEM");
         setSize(1200, 950); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); 
-
+   
         outerCardLayout = new CardLayout();
         outerPanel = new JPanel(outerCardLayout);
-
-        outerPanel.add(new LoginPanel(this), "CARD_LOGIN");
+        this.loginPanel = new LoginPanel(this);
+        
+        outerPanel.add(loginPanel, "CARD_LOGIN");
         outerPanel.add(createMainDashboard(), "CARD_MAIN");
-
         add(outerPanel);
         outerCardLayout.show(outerPanel, "CARD_LOGIN");
     }
 
     private JPanel createMainDashboard() {
         JPanel mainPanel = new JPanel(new BorderLayout());
-
         HeaderPanel headerPanel = new HeaderPanel(this);
-        SidebarPanel sidebarPanel = new SidebarPanel(this);
+        sidebarPanel = new SidebarPanel(this);
 
         innerCardLayout = new CardLayout();
         innerContentPanel = new JPanel(innerCardLayout);
@@ -51,24 +52,23 @@ public class MainFrame extends JFrame {
         return mainPanel;
     }
 
+    // Hàm lấy LoginPanel ra ngoài phục vụ liên kết Controller
+    public LoginPanel getLoginPanel() {
+        return this.loginPanel;
+    }
+
+    // Hàm làm mới quyền cho SidebarPanel
+    public void refreshSidebar() {
+        if (this.sidebarPanel != null) {
+            this.sidebarPanel.updatePermissions();
+        }
+    }
+
     public void switchOuterCard(String cardName) {
         outerCardLayout.show(outerPanel, cardName);
     }
 
     public void switchInnerCard(String cardName) {
         innerCardLayout.show(innerContentPanel, cardName);
-    }
-
-    public static void main(String[] args) {
-        // Sử dụng giao diện mặc định hệ điều hành ổn định
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new MainFrame().setVisible(true);
-        });
     }
 }
