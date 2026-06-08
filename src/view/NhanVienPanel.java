@@ -55,12 +55,9 @@ public class NhanVienPanel extends JPanel {
             new InputGroup("Địa chỉ:", txtDiaChi)
         };
         
-        // Tải ảnh minh họa cho phần Nhân viên
-        ImageIcon leftIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/leftNV.png"))
-                .getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
-
-        ImageIcon rightIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/rightNV.png"))
-                .getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
+        // Tải ảnh minh họa cho phần Khách hàng sử dụng ImageUtil để chống vỡ ảnh
+        ImageIcon leftIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220);
+        ImageIcon rightIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220);
 
         
         // 5. Khởi tạo FormPanel (Đã sửa truyền đúng mảng dữ liệu nhanVienInputs)

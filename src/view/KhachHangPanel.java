@@ -50,13 +50,11 @@ public class KhachHangPanel extends JPanel {
             new InputGroup("Ngày sinh:", txtNgaySinh)
         };
 
-        // Tải ảnh minh họa cho phần Khách hàng (Bạn có thể đổi tên file ảnh tương ứng trong thư mục images)
-        ImageIcon leftIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/leftNV.png"))
-                .getImage().getScaledInstance(180, 180, java.awt.Image.SCALE_SMOOTH));
+     // Tải ảnh minh họa cho phần Khách hàng sử dụng ImageUtil để chống vỡ ảnh
+        ImageIcon leftIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220);
+        ImageIcon rightIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220);
 
-        ImageIcon rightIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/rightNV.png"))
-                .getImage().getScaledInstance(180, 180, java.awt.Image.SCALE_SMOOTH));
-        // 5. Khởi tạo FormPanel (Đã bổ sung cấu trúc truyền thêm 2 ảnh vào hai bên)
+        // 5. Khởi tạo FormPanel (Truyền 2 ảnh đã được làm mịn vào hai bên)
         FormPanel formPanel = new FormPanel("Thông tin chi tiết khách hàng", khachHangInputs, leftIcon, rightIcon);
 
         // 6. Layout tổng thể

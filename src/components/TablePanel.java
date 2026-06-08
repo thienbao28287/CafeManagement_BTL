@@ -42,7 +42,6 @@ public class TablePanel extends JPanel {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         });
-        
         table.setFont(new Font("SansSerif", Font.PLAIN, 13));
         table.setRowHeight(35);
         table.setShowGrid(false);
@@ -85,7 +84,7 @@ public class TablePanel extends JPanel {
                 JLabel lbl = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 lbl.setBackground(new Color(247, 247, 253));
                 lbl.setForeground(new Color(139, 143, 199));
-                lbl.setFont(new Font("SansSerif", Font.BOLD, 11));
+                lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
                 lbl.setHorizontalAlignment(SwingConstants.CENTER);
                 lbl.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
                 return lbl;
