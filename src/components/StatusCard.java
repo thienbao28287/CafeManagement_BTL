@@ -1,0 +1,47 @@
+package components;
+
+import com.formdev.flatlaf.FlatClientProperties;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+
+public class StatusCard extends JPanel {
+    private JLabel lblIcon;
+    private JLabel lblValue;
+    private JLabel lblTitle;
+
+    public StatusCard(String title, String value, Icon icon, Color bgColor, Color textColor) {
+        setOpaque(true);
+        setBackground(bgColor);
+        setLayout(new BorderLayout(12, 0));
+        setBorder(new EmptyBorder(16, 20, 16, 20));
+        setPreferredSize(new Dimension(250, 90));
+
+        // 🔥 Tận dụng FlatLaf để bo góc tự động cho Panel mà không cần ghi đè paintComponent
+        putClientProperty(FlatClientProperties.STYLE, "arc: 18");
+
+        // Cụm trái: Icon
+        lblIcon = new JLabel(icon);
+        lblIcon.setVerticalAlignment(JLabel.CENTER);
+        add(lblIcon, BorderLayout.WEST);
+
+        // Cụm phải: Tiêu đề và Số liệu hiển thị
+        JPanel textPanel = new JPanel(new GridLayout(2, 1, 0, 2));
+        textPanel.setOpaque(false);
+
+        lblValue = new JLabel(value);
+        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblValue.setForeground(textColor);
+
+        lblTitle = new JLabel(title);
+        lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblTitle.setForeground(textColor);
+
+        textPanel.add(lblValue);
+        textPanel.add(lblTitle);
+        add(textPanel, BorderLayout.CENTER);
+    }
+
+    public void setValue(String value) { lblValue.setText(value); }
+    public void setTitle(String title) { lblTitle.setText(title); }
+}

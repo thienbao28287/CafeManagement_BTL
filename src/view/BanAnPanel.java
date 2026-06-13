@@ -269,14 +269,11 @@ private JButton createTableButton(
         + "<br><font size='2'>4 Ghế</font>"
         + "</center></html>"
     );
-
     btn.setFocusPainted(false);
-
     btn.putClientProperty(
         "JButton.arc",
         25
     );
-
     btn.setMargin(
         new Insets(
             0,
@@ -285,7 +282,6 @@ private JButton createTableButton(
             0
         )
     );
-
     btn.setFont(
         new Font(
             "Segoe UI",
@@ -293,7 +289,6 @@ private JButton createTableButton(
             18
         )
     );
-
     btn.setForeground(Color.WHITE);
 
     switch (trangThai) {

@@ -1,4 +1,3 @@
-
 package view;
 
 import javax.swing.*;
@@ -36,9 +35,11 @@ public class MainFrame extends JFrame {
         innerCardLayout = new CardLayout();
         innerContentPanel = new JPanel(innerCardLayout);
 
+        // Nạp tất cả các phân hệ chức năng vào hệ thống chuyển thẻ (CardLayout)
         innerContentPanel.add(new TrangChuPanel(), "PANEL_TRANG_CHU");
         innerContentPanel.add(new KhachHangPanel(), "PANEL_KHACH_HANG");
         innerContentPanel.add(new NhanVienPanel(), "PANEL_NHAN_VIEN");
+        innerContentPanel.add(new SanPhamPanel(), "PANEL_SAN_PHAM"); // Đã tích hợp thêm màn hình Sản phẩm
         innerContentPanel.add(new BanAnPanel(), "PANEL_BAN_AN");
         innerContentPanel.add(new DatHangPanel(), "PANEL_DAT_HANG");
         innerContentPanel.add(new HoaDonPanel(), "PANEL_HOA_DON");

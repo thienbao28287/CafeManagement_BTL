@@ -11,24 +11,18 @@ public class SearchButton extends JButton {
 	private final Color normalBg = new Color(254, 249, 238);
     private final Color normalText = new Color(146, 64, 14);
     private final Color normalBorder = new Color(253, 233, 192);
-
     private final Color hoverBg = new Color(146, 64, 14);
     private final Color hoverText = Color.WHITE;
     private final Color hoverBorder = new Color(217, 119, 6);
     public SearchButton(String text) {
 
         super(text);
-
         setFont(new Font("SansSerif", Font.BOLD, 12));
-
         setBackground(normalBg);
         setForeground(normalText);
-
         setPreferredSize(new Dimension(100, 34));
-
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         setFocusPainted(false);
-
         putClientProperty(
                 FlatClientProperties.STYLE,
                 "arc:12;" +
@@ -37,15 +31,11 @@ public class SearchButton extends JButton {
                 "foreground:#92400E;" +
                 "borderColor:#FDE9C0"
         );
-
         addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseEntered(MouseEvent e) {
-
                 setBackground(hoverBg);
                 setForeground(hoverText);
-
                 putClientProperty(
                         FlatClientProperties.STYLE,
                         "arc:12;" +
@@ -54,16 +44,12 @@ public class SearchButton extends JButton {
                         "foreground:#FFFFFF;" +
                         "borderColor:#D97706"
                 );
-
                 repaint();
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
-
                 setBackground(normalBg);
                 setForeground(normalText);
-
                 putClientProperty(
                         FlatClientProperties.STYLE,
                         "arc:12;" +
@@ -72,7 +58,6 @@ public class SearchButton extends JButton {
                         "foreground:#92400E;" +
                         "borderColor:#FDE9C0"
                 );
-
                 repaint();
             }
         });
