@@ -1,24 +1,28 @@
 package repository;
 
 import database.DBConnection;
-import model.KhachHang;
+import model.NhanVien;
 import java.sql.*;
 import java.util.*;
 
-public class KhachHangRepositoryImpl implements IKhachHangRepository {
+public class NhanVienRepositoryImpl implements INhanVienRepository {
 
     // --- 1. CÁC PHƯƠNG THỨC CRUD (Create, Read, Update, Delete) ---
 
     @Override
-    public boolean insert(KhachHang kh) {
-        String sql = "INSERT INTO KhachHang (MaKhachHang, TenKhachHang, SoDienThoai, DiaChi) VALUES (?,?,?,?)";
+    public boolean insert(NhanVien nv) {
+        String sql = "INSERT INTO NhanVien (MaNhanVien, TenNhanVien, SoDienThoai, Email, ChucVu, GioiTinh, DiaChi, Luong) VALUES (?,?,?,?,?,?,?,?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, kh.getMaKhachHang());
-            ps.setString(2, kh.getTenKhachHang());
-            ps.setString(3, kh.getSoDienThoai());
-            ps.setString(4, kh.getDiaChi());
+            ps.setString(1, nv.getMaNhanVien());
+            ps.setString(2, nv.getTenNhanVien());
+            ps.setString(3, nv.getSoDienThoai());
+            ps.setString(4, nv.getEmail());
+            ps.setString(5, nv.getChucVu());
+            ps.setString(6, nv.getGioiTinh());
+            ps.setString(7, nv.getDiaChi());
+            ps.setDouble(8, nv.getLuong());
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { 
@@ -28,41 +32,45 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
     }
 
     @Override
-    public List<KhachHang> findAll() {
-        List<KhachHang> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang";
+    public List<NhanVien> findAll() {
+        List<NhanVien> list = new ArrayList<>();
+        String sql = "SELECT * FROM NhanVien";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(mapRowToKhachHang(rs));
+                list.add(mapRowToNhanVien(rs));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
     @Override
-    public boolean update(KhachHang kh) {
-        String sql = "UPDATE KhachHang SET TenKhachHang=?, SoDienThoai=?, DiaChi=? WHERE MaKhachHang=?";
+    public boolean update(NhanVien nv) {
+        String sql = "UPDATE NhanVien SET TenNhanVien=?, SoDienThoai=?, Email=?, ChucVu=?, GioiTinh=?, DiaChi=?, Luong=? WHERE MaNhanVien=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, kh.getTenKhachHang());
-            ps.setString(2, kh.getSoDienThoai());
-            ps.setString(3, kh.getDiaChi());
-            ps.setString(4, kh.getMaKhachHang());
+            ps.setString(1, nv.getTenNhanVien());
+            ps.setString(2, nv.getSoDienThoai());
+            ps.setString(3, nv.getEmail());
+            ps.setString(4, nv.getChucVu());
+            ps.setString(5, nv.getGioiTinh());
+            ps.setString(6, nv.getDiaChi());
+            ps.setDouble(7, nv.getLuong());
+            ps.setString(8, nv.getMaNhanVien());
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
 
     @Override
-    public boolean delete(String maKhachHang) {
-        String sql = "DELETE FROM KhachHang WHERE MaKhachHang = ?";
+    public boolean delete(String maNhanVien) {
+        String sql = "DELETE FROM NhanVien WHERE MaNhanVien = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, maKhachHang);
+            ps.setString(1, maNhanVien);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
@@ -70,9 +78,9 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
     // --- 2. CÁC PHƯƠNG THỨC TÌM KIẾM & KIỂM TRA ---
 
     @Override
-    public List<KhachHang> search(String keyword) {
-        List<KhachHang> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang WHERE MaKhachHang LIKE ? OR TenKhachHang LIKE ?";
+    public List<NhanVien> search(String keyword) {
+        List<NhanVien> list = new ArrayList<>();
+        String sql = "SELECT * FROM NhanVien WHERE MaNhanVien LIKE ? OR TenNhanVien LIKE ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -81,19 +89,19 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
             ps.setString(2, pattern);
             
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapRowToKhachHang(rs));
+                while (rs.next()) list.add(mapRowToNhanVien(rs));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
     @Override
-    public boolean checkExists(String maKhachHang) {
-        String sql = "SELECT COUNT(*) FROM KhachHang WHERE MaKhachHang = ?";
+    public boolean checkExists(String maNhanVien) {
+        String sql = "SELECT COUNT(*) FROM NhanVien WHERE MaNhanVien = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, maKhachHang);
+            ps.setString(1, maNhanVien);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getInt(1) > 0;
             }
@@ -103,12 +111,16 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
 
     // --- 3. PHƯƠNG THỨC HỖ TRỢ (PRIVATE HELPERS) ---
 
-    private KhachHang mapRowToKhachHang(ResultSet rs) throws SQLException {
-        return new KhachHang(
-            rs.getString("MaKhachHang"), 
-            rs.getString("TenKhachHang"),
+    private NhanVien mapRowToNhanVien(ResultSet rs) throws SQLException {
+        return new NhanVien(
+            rs.getString("MaNhanVien"), 
+            rs.getString("TenNhanVien"),
             rs.getString("SoDienThoai"), 
-            rs.getString("DiaChi")
+            rs.getString("Email"),
+            rs.getString("ChucVu"), 
+            rs.getString("GioiTinh"),
+            rs.getString("DiaChi"), 
+            rs.getDouble("Luong")
         );
     }
 }

@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+
+import util.PermissionUtil;
 import util.SessionUtil; 
 import model.TaiKhoan;
 
@@ -51,34 +53,44 @@ public class SidebarPanel extends JPanel {
             return;
         }
 
-        String vaiTro = currentUser.getVaiTro();       // Lấy giá trị 'Admin' hoặc 'Nhân viên' từ DB
-        String maChucVu = currentUser.getMaChucVu();   // Lấy mã chức vụ để sơ phòng (CV01, CV02...)
+        String vaiTro = currentUser.getVaiTro();       // Lấy giá trị 'Admin' hoặc 'NhanVien' từ DB
+        boolean isAdmin =
+                PermissionUtil.isAdmin();
 
-        // 1. Nút Trang chủ (Tất cả mọi chức vụ đều có quyền sử dụng)
-        JButton btnTrangChu = new JButton("Trang chủ");
-        styleButton(btnTrangChu);
-        btnTrangChu.addActionListener(e -> mainFrame.switchInnerCard("PANEL_TRANG_CHU"));
-        add(btnTrangChu, gbc.clone());
+        boolean isNhanVien =
+                PermissionUtil.isNhanVien();
+
+        // 1. Nút Trang chủ (Không hiển thị cho Nhân Viên)
+        if (!isNhanVien) {
+            JButton btnTrangChu = new JButton("Trang chủ");
+            styleButton(btnTrangChu);
+            btnTrangChu.addActionListener(e -> mainFrame.switchInnerCard("PANEL_TRANG_CHU"));
+            add(btnTrangChu, gbc.clone());
+        }
         
-        // 2. Nút Khách hàng (Tất cả mọi chức vụ đều có quyền sử dụng)
-        JButton btnKhachHang = new JButton("Khách hàng");
-        styleButton(btnKhachHang);
-        btnKhachHang.addActionListener(e -> mainFrame.switchInnerCard("PANEL_KHACH_HANG"));
-        add(btnKhachHang, gbc.clone());
+        // 2. Nút Khách hàng (Không hiển thị cho Nhân Viên)
+        if (!isNhanVien) {
+            JButton btnKhachHang = new JButton("Khách hàng");
+            styleButton(btnKhachHang);
+            btnKhachHang.addActionListener(e -> mainFrame.switchInnerCard("PANEL_KHACH_HANG"));
+            add(btnKhachHang, gbc.clone());
+        }
         
         // 3. Nút Nhân viên (🛡️ CHỈ CÓ TÀI KHOẢN ADMIN MỚI ĐƯỢC PHÉP HIỂN THỊ)
-        if ("Admin".equalsIgnoreCase(vaiTro) || "CV01".equals(maChucVu)) {
+        if (isAdmin) {
             JButton btnNhanVien = new JButton("Nhân viên");
             styleButton(btnNhanVien);
             btnNhanVien.addActionListener(e -> mainFrame.switchInnerCard("PANEL_NHAN_VIEN"));
             add(btnNhanVien, gbc.clone());
         }
         
-        // 4. BỔ SUNG: Nút Sản phẩm (Tất cả chức vụ đều có quyền vào xem/tra cứu thực đơn)
-        JButton btnSanPham = new JButton("Sản phẩm");
-        styleButton(btnSanPham);
-        btnSanPham.addActionListener(e -> mainFrame.switchInnerCard("PANEL_SAN_PHAM"));
-        add(btnSanPham, gbc.clone());
+        // 4. Nút Sản phẩm (Không hiển thị cho Nhân Viên)
+        if (!isNhanVien) {
+            JButton btnSanPham = new JButton("Sản phẩm");
+            styleButton(btnSanPham);
+            btnSanPham.addActionListener(e -> mainFrame.switchInnerCard("PANEL_SAN_PHAM"));
+            add(btnSanPham, gbc.clone());
+        }
         
         // 5. Nút Bàn ăn (Tất cả mọi chức vụ đều có quyền sử dụng)
         JButton btnBanAn = new JButton("Bàn ăn");

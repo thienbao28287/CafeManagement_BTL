@@ -76,6 +76,21 @@ public class FormPanel extends JPanel {
 
         add(shadowPanel, BorderLayout.CENTER);
     }
+    public CustomButton getBtnLuu() {
+        return btnLuu;
+    }
+
+    public CustomButton getBtnLamMoi() {
+        return btnLamMoi;
+    }
+
+    public CustomButton getBtnXoa() {
+        return btnXoa;
+    }
+
+    public CustomButton getBtnHuy() {
+        return btnHuy;
+    }
 
     private JPanel createCard() {
         JPanel card = new JPanel() {

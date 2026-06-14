@@ -12,7 +12,11 @@ public class TablePanel extends JPanel {
 
     private JTable table;
     private JTextField txtTimKiem;
-
+    private SearchButton btnSearch;
+    public JTable getTable() { return table; }
+    public JTextField getTxtTimKiem() { return txtTimKiem; }
+    public SearchButton getBtnSearch() { return btnSearch; }
+    public DefaultTableModel getTableModel() { return (DefaultTableModel) table.getModel(); }
     public TablePanel(String[] columnTitles, String searchPlaceholder) {
         setOpaque(false);
         setLayout(new BorderLayout());
@@ -31,13 +35,12 @@ public class TablePanel extends JPanel {
         txtTimKiem.putClientProperty(FlatClientProperties.STYLE, "arc:10; focusWidth:1; borderWidth:1; borderColor:#E4E7F0; font:14");
         txtTimKiem.setPreferredSize(new Dimension(400, 32));
 
-        // Sử dụng SearchButton tùy chỉnh
-        SearchButton btnSearch = new SearchButton("Tìm kiếm");
+       
+        this.btnSearch = new SearchButton("Tìm kiếm");
         
         searchPanel.add(txtTimKiem);
-        searchPanel.add(btnSearch); // Đã sửa lỗi add(searchPanel)
-
-        // 3. Bảng dữ liệu - Cấu hình xóa viền
+        searchPanel.add(this.btnSearch);
+        
         table = new JTable(new DefaultTableModel(columnTitles, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -48,7 +51,7 @@ public class TablePanel extends JPanel {
         table.setIntercellSpacing(new Dimension(0, 0));
         table.setBorder(null);
 
-        // Căn giữa dữ liệu
+        
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         for (int i = 0; i < table.getColumnCount(); i++) {
@@ -57,7 +60,7 @@ public class TablePanel extends JPanel {
 
         styleTableHeader();
         
-        // 4. ScrollPane - Cấu hình xóa viền
+       
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(null);
         scrollPane.setViewportBorder(null);
@@ -66,7 +69,7 @@ public class TablePanel extends JPanel {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.putClientProperty(FlatClientProperties.STYLE, "border:0,0,0,0");
 
-        // Gắn vào Card
+        
         tableCard.add(searchPanel, BorderLayout.NORTH);
         tableCard.add(scrollPane, BorderLayout.CENTER);
 
@@ -120,7 +123,7 @@ public class TablePanel extends JPanel {
         card.setBorder(new EmptyBorder(6, 6, 6, 6)); 
         return card;
     }
-
-    public JTable getTable() { return table; }
-    public JTextField getTxtTimKiem() { return txtTimKiem; }
+    public JTextField getSearchField() {
+        return txtTimKiem;
+    }
 }

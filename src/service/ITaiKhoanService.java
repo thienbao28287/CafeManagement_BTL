@@ -1,5 +1,11 @@
 package service;
 
+import model.TaiKhoan;
+
 public interface ITaiKhoanService {
-    boolean login(String username, String password);
+
+    TaiKhoan login(
+            String username,
+            String password
+    );
 }
