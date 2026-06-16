@@ -6,7 +6,11 @@ import util.UIFactory; // Import UIFactory để đồng bộ thiết kế
 
 public class SpinnerGroup extends JPanel {
 
-    private JSpinner spinner;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JSpinner spinner;
 
     public SpinnerGroup(String labelText, int min, int max, int value, int step) {
         setOpaque(false);

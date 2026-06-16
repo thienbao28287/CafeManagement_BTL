@@ -1,5 +1,6 @@
 package view;
 
+import controller.DatHangController;
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,18 +10,22 @@ public class MainFrame extends JFrame {
     private CardLayout innerCardLayout;
     private JPanel innerContentPanel;
     private SidebarPanel sidebarPanel;
-    private LoginPanel loginPanel; 
+    private LoginPanel loginPanel;
+    
+    // Lưu trữ các panel để có thể truy xuất hoặc làm mới nếu cần
+    private DatHangPanel datHangPanel;
+    private HoaDonPanel hoaDonPanel;
 
     public MainFrame() {
         setTitle("COFFEE SHOP MANAGEMENT SYSTEM");
-        setSize(1200, 950); 
+        setSize(1200, 950);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); 
-   
+        setLocationRelativeTo(null);
+
         outerCardLayout = new CardLayout();
         outerPanel = new JPanel(outerCardLayout);
         this.loginPanel = new LoginPanel(this);
-        
+
         outerPanel.add(loginPanel, "CARD_LOGIN");
         outerPanel.add(createMainDashboard(), "CARD_MAIN");
         add(outerPanel);
@@ -35,30 +40,37 @@ public class MainFrame extends JFrame {
         innerCardLayout = new CardLayout();
         innerContentPanel = new JPanel(innerCardLayout);
 
-        // Nạp tất cả các phân hệ chức năng vào hệ thống chuyển thẻ (CardLayout)
+        // Khởi tạo các Panel
+        this.datHangPanel = new DatHangPanel();
+        this.hoaDonPanel = new HoaDonPanel();
+
+        // Khởi tạo Controller và thiết lập kết nối
+        DatHangController datHangController = new DatHangController(datHangPanel);
+        datHangController.setHoaDonPanel(hoaDonPanel);
+        datHangController.initEvents();
+
+        // Nạp các phân hệ chức năng vào CardLayout
         innerContentPanel.add(new TrangChuPanel(), "PANEL_TRANG_CHU");
         innerContentPanel.add(new KhachHangPanel(), "PANEL_KHACH_HANG");
         innerContentPanel.add(new NhanVienPanel(), "PANEL_NHAN_VIEN");
-        innerContentPanel.add(new SanPhamPanel(), "PANEL_SAN_PHAM"); // Đã tích hợp thêm màn hình Sản phẩm
+        innerContentPanel.add(new SanPhamPanel(), "PANEL_SAN_PHAM");
         innerContentPanel.add(new BanAnPanel(), "PANEL_BAN_AN");
-        innerContentPanel.add(new DatHangPanel(), "PANEL_DAT_HANG");
-        innerContentPanel.add(new HoaDonPanel(), "PANEL_HOA_DON");
+        innerContentPanel.add(datHangPanel, "PANEL_DAT_HANG");
+        innerContentPanel.add(hoaDonPanel, "PANEL_HOA_DON");
 
-        mainPanel.add(headerPanel, BorderLayout.NORTH);       
-        mainPanel.add(sidebarPanel, BorderLayout.WEST);       
-        mainPanel.add(innerContentPanel, BorderLayout.CENTER); 
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(sidebarPanel, BorderLayout.WEST);
+        mainPanel.add(innerContentPanel, BorderLayout.CENTER);
 
         innerCardLayout.show(innerContentPanel, "PANEL_TRANG_CHU");
 
         return mainPanel;
     }
 
-    // Hàm lấy LoginPanel ra ngoài phục vụ liên kết Controller
     public LoginPanel getLoginPanel() {
         return this.loginPanel;
     }
 
-    // Hàm làm mới quyền cho SidebarPanel
     public void refreshSidebar() {
         if (this.sidebarPanel != null) {
             this.sidebarPanel.updatePermissions();

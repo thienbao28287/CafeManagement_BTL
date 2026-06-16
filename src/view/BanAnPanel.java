@@ -1,159 +1,124 @@
 package view;
 
-import components.FormPanel;
+import components.*;
 import components.HeaderPanel;
-import components.InputGroup;
-import components.CustomButton; 
-import util.UIFactory;
+import controller.BanAnController;
+import util.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class BanAnPanel extends JPanel {
 
-    private JTextField txtMaSoGhe;
-    private JTextField txtViTri;
+    private TablePanel tablePanel;
+    private FormPanel formPanel;
+    private BanAnController controller;
+    private DashboardBanAnPanel dashboardPanel;
+    
+    private JTextField txtMa, txtSoGhe, txtViTri;
     private JComboBox<String> cbTrangThai;
-    private JComboBox<String> cbTang;
-    private JPanel gridPanel;
 
     public BanAnPanel() {
         setLayout(new BorderLayout(0, 16));
-        setOpaque(false);
+        setOpaque(true);
         setBorder(new EmptyBorder(20, 20, 20, 20));
-
+        
         add(new HeaderPanel("🪑 Bàn ăn", "Quản lý bàn ăn", 
-            new Color(30, 41, 59), new Color(51, 65, 85), new Color(71, 85, 105)), 
+            new Color(59, 26, 8), new Color(124, 58, 14), new Color(180, 83, 9)), 
             BorderLayout.NORTH);
+        
+        initTableAndForm();
+        
+        this.controller = new BanAnController(this);
+        this.controller.loadData();
+        this.controller.initEvents(); 
+    }
 
-        txtMaSoGhe = UIFactory.createTextField();
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        LinearGradientPaint gradient = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(getWidth(), getHeight()),
+                new float[]{0f, 0.5f, 1f},
+                new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
+        );
+        
+        g2.setPaint(gradient);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
+
+    private void initTableAndForm() {
+        String[] columns = {"MÃ BÀN", "SỐ GHẾ", "TRẠNG THÁI", "VỊ TRÍ"};
+        tablePanel = new TablePanel(columns, "Tìm kiếm bàn ăn...");
+
+        txtMa = UIFactory.createTextField();
+        txtSoGhe = UIFactory.createTextField();
         txtViTri = UIFactory.createTextField();
-        cbTrangThai = UIFactory.createComboBox(new String[]{"Trống", "Đang sử dụng", "Đã đặt trước"});
+        cbTrangThai = UIFactory.createComboBox(new String[]{"Trống", "Đang dùng", "Đã đặt"});
 
-        Component[] banAnInputs = {
-            new InputGroup("Mã bàn:", txtMaSoGhe),
-            new InputGroup("Trạng thái:", cbTrangThai),
-            new InputGroup("Vị trí:", txtViTri)
+        Component[] inputs = {
+            new InputGroup("Mã bàn", txtMa),
+            new InputGroup("Số ghế", txtSoGhe),
+            new InputGroup("Trạng thái", cbTrangThai),
+            new InputGroup("Vị trí", txtViTri)
         };
 
-        ImageIcon leftIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220);
-        ImageIcon rightIcon = util.ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220);
-
-        FormPanel formPanel = new FormPanel("Thông tin bàn ăn", banAnInputs, leftIcon, rightIcon);
+        formPanel = new FormPanel("Thông tin bàn ăn", inputs, null, null);
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);
-        content.add(createDashboardPanel(), BorderLayout.CENTER);
-        content.add(formPanel, BorderLayout.SOUTH);
-
-        add(content, BorderLayout.CENTER);
-    }
-
-    private JPanel createDashboardPanel() {
-        JPanel panel = new JPanel(new BorderLayout(20, 0));
-        panel.setOpaque(false);
-        panel.add(createStatsPanel(), BorderLayout.WEST);
-        panel.add(createTableMapPanel(), BorderLayout.CENTER);
-        return panel;
-    }
-
-    private JPanel createStatsPanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 1, 0, 12));
-        panel.setOpaque(false);
-        panel.setPreferredSize(new Dimension(220, 0));
-        panel.add(createStatCard("Tổng bàn", "36"));
-        panel.add(createStatCard("Trống", "12"));
-        panel.add(createStatCard("Đang dùng", "12"));
-        panel.add(createStatCard("Đặt trước", "12"));
-        return panel;
-    }
-
-    private JPanel createStatCard(String title, String value) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
-            new EmptyBorder(12, 15, 12, 15)
-        ));
-        card.putClientProperty("FlatLaf.style", "arc: 15");
-
-        JLabel lblTitle = new JLabel(title);
-        JLabel lblValue = new JLabel(value);
-        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 18));
-
-        card.add(lblTitle, BorderLayout.NORTH);
-        card.add(lblValue, BorderLayout.CENTER);
-        return card;
-    }
-
-    private JPanel createTableMapPanel() {
-        JPanel wrapper = new JPanel(new BorderLayout(10, 10));
-        wrapper.setBackground(Color.WHITE);
-        wrapper.setBorder(new EmptyBorder(15, 15, 15, 15));
-        wrapper.putClientProperty("FlatLaf.style", "arc: 15");
-
-        // Header: Tinh chỉnh đậm nét hơn
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setOpaque(false);
-        headerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(230, 230, 230)));
         
-        JLabel lblTitle = new JLabel("Sơ đồ bàn ăn");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblTitle.setForeground(new Color(30, 41, 59));
-        
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        dashboardPanel = new DashboardBanAnPanel();
+        JPanel topPanel = new JPanel(new BorderLayout(15, 0));
         topPanel.setOpaque(false);
-        cbTang = new JComboBox<>(new String[]{"Tầng 1", "Tầng 2"});
-        cbTang.setPreferredSize(new Dimension(100, 30));
-        topPanel.add(new JLabel("Tầng:"));
-        topPanel.add(cbTang);
-        
-        headerPanel.add(lblTitle, BorderLayout.WEST);
-        headerPanel.add(topPanel, BorderLayout.EAST);
-        wrapper.add(headerPanel, BorderLayout.NORTH);
+        topPanel.add(dashboardPanel, BorderLayout.WEST);
+        topPanel.add(tablePanel, BorderLayout.CENTER);
 
-        gridPanel = new JPanel(new GridLayout(3, 6, 12, 12));
-        gridPanel.setOpaque(false);
-        wrapper.add(gridPanel, BorderLayout.CENTER);
+        content.add(topPanel, BorderLayout.CENTER);
+        content.add(formPanel, BorderLayout.SOUTH);
+        add(content, BorderLayout.CENTER);
 
-        loadTables(1);
-        cbTang.addActionListener(e -> loadTables(cbTang.getSelectedIndex() + 1));
-        return wrapper;
-    }
-
-    private void loadTables(int tang) {
-        gridPanel.removeAll();
-        int start = (tang == 1) ? 1 : 19;
-        for (int i = 0; i < 18; i++) {
-            String maBan = String.format("B%02d", start + i);
-            String trangThai = ((start + i) % 3 == 0) ? "TRONG" : (((start + i) % 3 == 1) ? "DANG_DUNG" : "DAT_TRUOC");
-            gridPanel.add(createTableButton(maBan, trangThai, "Tầng " + tang));
-        }
-        gridPanel.revalidate();
-        gridPanel.repaint();
-    }
-
-    private CustomButton createTableButton(String maBan, String trangThai, String viTri) {
-        CustomButton btn = new CustomButton("<html><center>" + maBan + "<br><font size='2'>4 Ghế</font></center></html>");
-        
-        // Màu sắc trạng thái
-        Color bg = switch (trangThai) {
-            case "TRONG" -> new Color(34, 197, 94);
-            case "DANG_DUNG" -> new Color(239, 68, 68);
-            default -> new Color(245, 158, 11);
-        };
-        
-        btn.setBackground(bg);
-        btn.setForeground(Color.WHITE);
-        // Bỏ bớt logic hover mặc định nếu cần trong CustomButton để màu nền không bị ghi đè
-
-        btn.addActionListener(e -> {
-            txtMaSoGhe.setText(maBan);
-            txtViTri.setText(viTri);
-            cbTrangThai.setSelectedItem(trangThai.equals("TRONG") ? "Trống" : 
-                (trangThai.equals("DANG_DUNG") ? "Đang sử dụng" : "Đã đặt trước"));
+        tablePanel.getTable().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && tablePanel.getTable().getSelectedRow() != -1) {
+                fillFormFromSelectedRow();
+            }
         });
-
-        return btn;
     }
+
+    private void fillFormFromSelectedRow() {
+        int row = tablePanel.getTable().getSelectedRow();
+        txtMa.setText(tablePanel.getTable().getValueAt(row, 0).toString());
+        txtSoGhe.setText(tablePanel.getTable().getValueAt(row, 1).toString());
+        cbTrangThai.setSelectedItem(tablePanel.getTable().getValueAt(row, 2).toString());
+        txtViTri.setText(tablePanel.getTable().getValueAt(row, 3).toString());
+        txtMa.setEditable(false); 
+    }
+
+    public void clearForm() {
+        txtMa.setText(""); txtSoGhe.setText(""); txtViTri.setText("");
+        cbTrangThai.setSelectedIndex(0);
+        getTable().clearSelection();
+        txtMa.setEditable(true); 
+    }
+
+    public JTable getTable() { return tablePanel.getTable(); }
+    public DefaultTableModel getTableModel() { return (DefaultTableModel) tablePanel.getTable().getModel(); }
+    public TablePanel getTablePanel() { return tablePanel; } 
+    
+    public JTextField getTxtMa() { return txtMa; }
+    public JTextField getTxtSoGhe() { return txtSoGhe; }
+    public JTextField getTxtViTri() { return txtViTri; }
+    public JComboBox<String> getCbTrangThai() { return cbTrangThai; }
+    
+    public JButton getBtnLuu() { return formPanel.getBtnLuu(); }
+    public JButton getBtnXoa() { return formPanel.getBtnXoa(); }
+    public JButton getBtnLamMoi() { return formPanel.getBtnLamMoi(); }
+    public DashboardBanAnPanel getDashboardPanel() { return dashboardPanel; }
 }

@@ -112,7 +112,7 @@ public class NhanVienPanel extends JPanel {
     // 5. Các Getter (Cung cấp cho Controller)
     public JTable getTable() { return tablePanel.getTable(); }
     public DefaultTableModel getTableModel() { return (DefaultTableModel) tablePanel.getTable().getModel(); }
-    public TablePanel getTablePanel() { return tablePanel; } // Thêm getter này để Controller reset ô tìm kiếm
+    public TablePanel getTablePanel() { return tablePanel; } 
     
     public JTextField getTxtMa() { return txtMa; }
     public JTextField getTxtTen() { return txtTen; }

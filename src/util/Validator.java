@@ -31,4 +31,32 @@ public class Validator {
             throw new InvalidInputException("Số điện thoại chỉ được chứa ký tự số!");
         }
     }
+
+ public static void validateSanPham(String ten, String loai, String soLuong, String giaBan) throws InvalidInputException {
+    // 1. Kiểm tra bỏ trống tất cả các trường
+    if (ten.trim().isEmpty() || loai.trim().isEmpty() || soLuong.trim().isEmpty() || giaBan.trim().isEmpty()) {
+        throw new InvalidInputException("Vui lòng điền đầy đủ các thông tin!");
+    }
+
+    // 2. Kiểm tra Loại không được chứa số
+    if (loai.matches(".*\\d.*")) {
+        throw new InvalidInputException("Loại sản phẩm không được chứa số!");
+    }
+
+    // 3. Kiểm tra định dạng số cho Số lượng
+    try {
+        int sl = Integer.parseInt(soLuong);
+        if (sl < 0) throw new Exception();
+    } catch (Exception e) {
+        throw new InvalidInputException("Số lượng phải là số nguyên không âm!");
+    }
+
+    // 4. Kiểm tra định dạng số cho Giá bán
+    try {
+        double gia = Double.parseDouble(giaBan);
+        if (gia < 0) throw new Exception();
+    } catch (Exception e) {
+        throw new InvalidInputException("Giá bán phải là số thực không âm!");
+    }
+}
 }

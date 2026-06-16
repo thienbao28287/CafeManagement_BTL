@@ -10,7 +10,11 @@ import java.awt.*;
 
 public class TablePanel extends JPanel {
 
-    private JTable table;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTable table;
     private JTextField txtTimKiem;
     private SearchButton btnSearch;
     public JTable getTable() { return table; }
@@ -126,4 +130,13 @@ public class TablePanel extends JPanel {
     public JTextField getSearchField() {
         return txtTimKiem;
     }
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+	public void setTxtTimKiem(JTextField txtTimKiem) {
+		this.txtTimKiem = txtTimKiem;
+	}
+	public void setBtnSearch(SearchButton btnSearch) {
+		this.btnSearch = btnSearch;
+	}
 }

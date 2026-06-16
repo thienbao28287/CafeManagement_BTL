@@ -5,7 +5,11 @@ import util.UIFactory;
 import java.awt.*;
 
 public class ComboBoxGroup extends JPanel {
-    private JComboBox<String> comboBox;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JComboBox<String> comboBox;
     public ComboBoxGroup(String labelText, String[] items) {
         setOpaque(false);
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));

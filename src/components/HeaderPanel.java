@@ -5,7 +5,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class HeaderPanel extends JPanel {
-    // 1. Khai báo các thuộc tính màu
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// 1. Khai báo các thuộc tính màu
     private Color colorStart;
     private Color colorMid;
     private Color colorEnd;

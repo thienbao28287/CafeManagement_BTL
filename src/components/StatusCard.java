@@ -6,7 +6,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class StatusCard extends JPanel {
-    private JLabel lblIcon;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JLabel lblIcon;
     private JLabel lblValue;
     private JLabel lblTitle;
 

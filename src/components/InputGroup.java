@@ -5,7 +5,12 @@ import java.awt.*;
 
 public class InputGroup extends JPanel {
 
-    public InputGroup(String labelText, JComponent inputComponent) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public InputGroup(String labelText, JComponent inputComponent) {
 
         setOpaque(false);
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));

@@ -62,7 +62,7 @@ public class TrangChuPanel extends JPanel {
         g2.dispose();
     }
 
-    private JPanel createWelcomeBanner() {
+   private JPanel createWelcomeBanner() {
         JPanel banner = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -80,38 +80,48 @@ public class TrangChuPanel extends JPanel {
             }
         };
         banner.setOpaque(false);
-        banner.setLayout(new BorderLayout(20, 0));
+        banner.setLayout(new BorderLayout(20, 0)); // Khoảng cách 20px giữa text và ảnh
         banner.setBorder(new EmptyBorder(20, 32, 20, 32));
         banner.setPreferredSize(new Dimension(0, 180));
 
+        // --- PHẦN NỘI DUNG (TRÁI) ---
         JPanel leftTextPanel = new JPanel(new GridBagLayout());
         leftTextPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0; gbc.anchor = GridBagConstraints.WEST; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
 
-        JLabel lblSub = new JLabel("☕  COFFEE SHOP");
+        JLabel lblSub = new JLabel("☕ COFFEE SHOP");
         lblSub.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblSub.setForeground(new Color(0xD2A06F)); 
         gbc.gridy = 0; leftTextPanel.add(lblSub, gbc);
 
         JLabel lblWelcome = new JLabel("Chào mừng đến");
-        lblWelcome.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 30));
         lblWelcome.setForeground(Color.WHITE);
         gbc.gridy = 1; gbc.insets = new Insets(4, 0, 0, 0);
         leftTextPanel.add(lblWelcome, gbc);
 
         JLabel lblSystemName = new JLabel("Management System");
-        lblSystemName.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblSystemName.setForeground(new Color(0xF3C68F)); 
+        lblSystemName.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        lblSystemName.setForeground(new Color(0xFCD34D)); 
         gbc.gridy = 2; gbc.insets = new Insets(0, 0, 6, 0);
         leftTextPanel.add(lblSystemName, gbc);
 
         JLabel lblDesc = new JLabel("<html>Hệ thống quản lý quán cà phê — quản lý khách hàng, nhân viên, bàn ăn<br>và đơn hàng một cách hiệu quả, chuyên nghiệp.</html>");
-        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         lblDesc.setForeground(new Color(0xDCDCDC)); 
         gbc.gridy = 3; leftTextPanel.add(lblDesc, gbc);
 
-        banner.add(leftTextPanel, BorderLayout.CENTER);
+        banner.add(leftTextPanel, BorderLayout.CENTER); // Đặt nội dung vào giữa (bên trái)
+
+        // --- PHẦN ẢNH (PHẢI) ---
+        // Thay đường dẫn "/images/coffee_banner.png" bằng ảnh thực tế của bạn
+        ImageIcon icon = new ImageIcon(getClass().getResource("/img/image3.png")); 
+        Image scaledImage = icon.getImage().getScaledInstance(202, 140, Image.SCALE_SMOOTH);
+        JLabel lblImage = new JLabel(new ImageIcon(scaledImage));
+        
+        banner.add(lblImage, BorderLayout.EAST); // Đặt ảnh vào bên phải
+
         return banner;
     }
 

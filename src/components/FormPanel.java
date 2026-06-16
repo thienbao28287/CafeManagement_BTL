@@ -7,7 +7,11 @@ import java.awt.*;
 
 public class FormPanel extends JPanel {
 
-    private CustomButton btnLuu, btnLamMoi, btnXoa, btnHuy;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private CustomButton btnLuu, btnLamMoi, btnXoa, btnHuy;
 
     // Bổ sung thêm tham số leftIcon và rightIcon vào constructor
     public FormPanel(String title, Component[] inputComponents, Icon leftIcon, Icon rightIcon) {
@@ -114,5 +118,25 @@ public class FormPanel extends JPanel {
         card.setOpaque(false);
         card.setBorder(new EmptyBorder(6, 6, 6, 6)); 
         return card;
+    }
+    public void addButtons(JButton[] buttons) {
+        // Giả sử FormPanel của bạn có một JPanel chứa các nút, 
+        // ví dụ tên là buttonPanel (hãy kiểm tra xem trong FormPanel của bạn nó tên gì)
+        // Nếu chưa có, bạn có thể tạo mới một JPanel để chứa các nút này.
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setOpaque(false);
+        
+        for (JButton btn : buttons) {
+            buttonPanel.add(btn);
+        }
+        
+        // Thêm panel chứa nút vào FormPanel. 
+        // Tùy theo layout của FormPanel, bạn có thể dùng add(buttonPanel, BorderLayout.SOUTH);
+        this.add(buttonPanel); 
+        
+        // Yêu cầu giao diện cập nhật lại
+        this.revalidate();
+        this.repaint();
     }
 }

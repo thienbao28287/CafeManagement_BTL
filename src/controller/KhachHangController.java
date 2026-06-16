@@ -119,4 +119,5 @@ public class KhachHangController {
             view.getTxtDiaChi().getText()
         );
     }
+    
 }

@@ -8,12 +8,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class SearchButton extends JButton {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final Color normalBg = new Color(254, 249, 238);
     private final Color normalText = new Color(146, 64, 14);
-    private final Color normalBorder = new Color(253, 233, 192);
     private final Color hoverBg = new Color(146, 64, 14);
     private final Color hoverText = Color.WHITE;
-    private final Color hoverBorder = new Color(217, 119, 6);
     public SearchButton(String text) {
 
         super(text);
