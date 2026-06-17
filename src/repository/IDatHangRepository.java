@@ -10,5 +10,6 @@ public interface IDatHangRepository {
     boolean delete(String maHoaDon, String maSanPham);
     boolean checkExists(String maHoaDon, String maSanPham);
     // Thêm dòng này:
-    ChiTietHoaDon getById(String maHoaDon, String maSanPham); 
+    ChiTietHoaDon getById(String maHoaDon, String maSanPham);
+    List<ChiTietHoaDon> searchByMaSanPham(String maSanPham);
 }

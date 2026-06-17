@@ -54,8 +54,16 @@ public class DatHangController {
 
         view.getTablePanel().getBtnSearch().addActionListener(e -> {
             String keyword = view.getTablePanel().getTxtTimKiem().getText().trim();
-            if (!keyword.isEmpty()) view.getTxtMaDatHang().setText(keyword);
-            loadData();
+            if (keyword.isEmpty()) {
+                loadData();
+            } else {
+                searchBySanPham(keyword);
+            }
+        });
+
+        view.getTablePanel().getTxtTimKiem().addActionListener(e -> {
+            String keyword = view.getTablePanel().getTxtTimKiem().getText().trim();
+            if (keyword.isEmpty()) loadData(); else searchBySanPham(keyword);
         });
 
         view.getTablePanel().getTable().getSelectionModel().addListSelectionListener(e -> {
@@ -67,6 +75,21 @@ public class DatHangController {
 
     public void loadData() {
         searchOrderItems(view.getTxtMaDatHang().getText().trim());
+    }
+
+    public void searchBySanPham(String maSanPham) {
+        DefaultTableModel model = (DefaultTableModel) view.getTablePanel().getTable().getModel();
+        model.setRowCount(0);
+        double tongTien = 0;
+        for (ChiTietHoaDon item : service.searchByMaSanPham(maSanPham)) {
+            model.addRow(new Object[]{
+                item.getMaHoaDon(), item.getMaSanPham(), item.getTenSanPham(),
+                item.getSoLuong(), util.CurrencyUtil.formatCurrency(item.getDonGia()),
+                util.CurrencyUtil.formatCurrency(item.getThanhTien())
+            });
+            tongTien += item.getThanhTien();
+        }
+        view.getLblTongTien().setText("Tổng tiền: " + util.CurrencyUtil.formatCurrency(tongTien));
     }
 
     public void searchOrderItems(String maHoaDon) {
@@ -164,10 +187,10 @@ public class DatHangController {
         
         if (!isBanHopLe(maBan)) throw new NotFoundException("Mã bàn không tồn tại!");
         
-        // 2. Nếu trống thì để là "KH_VANGLAI", nếu có thì lấy giá trị nhập vào
-        String maKH = (maKHInput.isEmpty()) ? "KH_VANGLAI" : maKHInput;
+        // 2. Nếu trống hoặc là text mặc định thì truyền null (khách vャng lai)
+        String maKH = (maKHInput.isEmpty() || maKHInput.equals("Khách Vãng Lai")) ? null : maKHInput;
         
-        // 3. Truyền 'maKH' vào constructor thay vì 'null'
+        // 3. null = khách vãng lai, DB đã cho ph麐p MaKhachHang NULL
         hoaDonService.addHoaDon(new HoaDon(maHoaDon, 0, "Đang phục vụ", new java.util.Date(), "NV01", maKH, maBan));
     }
 
@@ -189,6 +212,7 @@ public class DatHangController {
             if (maHoaDon.isEmpty() || maBan.isEmpty()) throw new InvalidInputException("Mã đặt hàng và mã bàn không được để trống!");
             if (hoaDonService.getHoaDonById(maHoaDon) != null) throw new DuplicateException("Hóa đơn đã tồn tại! Vui lòng nhấn Cập nhật.");
             ensureInvoiceHeaderExists(maHoaDon);
+            searchOrderItems(maHoaDon); // Hiển thị danh sách món sau khi tạo đơn
             if (hoaDonPanel != null) hoaDonPanel.refreshData();
             JOptionPane.showMessageDialog(view, "Tạo hóa đơn thành công!");
         } catch (Exception e) {

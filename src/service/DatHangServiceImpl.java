@@ -94,7 +94,4 @@ public void addOrUpdate(ChiTietHoaDon cthd) {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }	
-    
-    
-}
+    }}

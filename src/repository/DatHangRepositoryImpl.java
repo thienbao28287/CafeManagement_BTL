@@ -99,6 +99,22 @@ public class DatHangRepositoryImpl implements IDatHangRepository {
         }
         return null;
     }    
+
+    @Override
+    public List<ChiTietHoaDon> searchByMaSanPham(String maSanPham) {
+        List<ChiTietHoaDon> list = new java.util.ArrayList<>();
+        String sql = "SELECT ct.*, sp.TenSanPham FROM ChiTietHoaDon ct " +
+                     "JOIN SanPham sp ON ct.MaSanPham = sp.MaSanPham " +
+                     "WHERE ct.MaSanPham LIKE ?";
+        try (java.sql.Connection conn = database.DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + maSanPham + "%");
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(mapRow(rs));
+            }
+        } catch (java.sql.SQLException e) { e.printStackTrace(); }
+        return list;
+    }
     private ChiTietHoaDon mapRow(ResultSet rs) throws SQLException {
         return new ChiTietHoaDon(
             rs.getString("MaHoaDon"),
