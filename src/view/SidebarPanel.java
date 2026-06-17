@@ -14,8 +14,8 @@ public class SidebarPanel extends JPanel {
     public SidebarPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         setBackground(new Color(0x2C1E14));
-        setPreferredSize(new Dimension(275, 910));
-        setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
+        setPreferredSize(new Dimension(265, 910));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 40, 20));
         
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -33,7 +33,7 @@ public class SidebarPanel extends JPanel {
         boolean isNhanVien = PermissionUtil.isNhanVien();
 
         if (!isNhanVien) {
-            addNavButton("Trang chủ", "/img/trangChu.png", "PANEL_TRANG_CHU");
+            addNavButton("Trang chủ", "/img/house.png", "PANEL_TRANG_CHU");
             addNavButton("Khách hàng", "/img/khachHang.png", "PANEL_KHACH_HANG");
         }
         if (isAdmin) addNavButton("Nhân viên", "/img/nhanVien1.png", "PANEL_NHAN_VIEN");
@@ -42,7 +42,7 @@ public class SidebarPanel extends JPanel {
         addNavButton("Đặt hàng", "/img/dathang1.png", "PANEL_DAT_HANG");
         addNavButton("Hóa đơn", "/img/hoaDon.png", "PANEL_HOA_DON");
         
-        if (!isNhanVien) addNavButton("Sản phẩm", "/img/logo.png", "PANEL_SAN_PHAM");
+        if (!isNhanVien) addNavButton("Sản phẩm", "/img/sanPham.png", "PANEL_SAN_PHAM");
 
         gbc.weighty = 1.0;
         add(Box.createGlue(), gbc);
@@ -66,7 +66,7 @@ public class SidebarPanel extends JPanel {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setOpaque(false);
-        btn.setPreferredSize(new Dimension(235, 64));
+        btn.setPreferredSize(new Dimension(225, 60));
 
         btn.addActionListener(e -> {
             resetAllButtons();

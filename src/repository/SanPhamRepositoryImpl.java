@@ -98,4 +98,13 @@ public class SanPhamRepositoryImpl implements ISanPhamRepository {
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
+    @Override
+    public void updateSoLuong(Connection conn, String maSP, int soLuongThayDoi) throws SQLException {
+        String sql = "UPDATE SanPham SET SoLuong = SoLuong + ? WHERE MaSanPham = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongThayDoi);
+            ps.setString(2, maSP);
+            ps.executeUpdate();
+        }
+    }
 }

@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class SanPhamPanel extends JPanel {
 
@@ -25,7 +26,7 @@ public class SanPhamPanel extends JPanel {
         setOpaque(false);
         setBorder(new EmptyBorder(20, 20, 20, 20));
         
-        add(new HeaderPanel("📦 Sản phẩm", "Quản lý danh mục sản phẩm", 
+        add(new HeaderPanel("Sản phẩm", "Quản lý danh mục sản phẩm", 
                 new Color(59, 26, 8), new Color(124, 58, 14), new Color(180, 83, 9)), 
                 BorderLayout.NORTH);
         
@@ -36,12 +37,27 @@ public class SanPhamPanel extends JPanel {
         this.controller.loadData();
         this.controller.initEvents(); 
     }
-
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        LinearGradientPaint gradient = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(getWidth(), getHeight()),
+                new float[]{0f, 0.5f, 1f},
+                new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
+        );
+        g2.setPaint(gradient);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
     // 3. Khởi tạo Table và Form
     private void initTableAndForm() {
         String[] columns = {"MÃ SP", "TÊN SẢN PHẨM", "LOẠI", "SỐ LƯỢNG", "GIÁ BÁN", "TRẠNG THÁI"};
         tablePanel = new TablePanel(columns, "Tìm kiếm sản phẩm...");
-
+        tablePanel.setOpaque(false);
         txtMa = UIFactory.createTextField();
         txtTen = UIFactory.createTextField();
         txtLoai = UIFactory.createTextField();
@@ -59,8 +75,8 @@ public class SanPhamPanel extends JPanel {
         };
 
         formPanel = new FormPanel("Thông tin sản phẩm", inputs, 
-            ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220), 
-            ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220));
+            ImageUtil.getScaledIcon(getClass(), "/img/SP01.png", 220, 220), 
+            ImageUtil.getScaledIcon(getClass(), "/img/SP02.png", 220, 220));
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);
@@ -95,7 +111,12 @@ public class SanPhamPanel extends JPanel {
         tablePanel.getTable().clearSelection();
         txtMa.setEditable(true);
     }
-
+ // Thêm hàm này vào SanPhamPanel.java để Controller khác có thể gọi
+    public void refreshData() {
+        if (this.controller != null) {
+            this.controller.loadData();
+        }
+    }
     // 5. Getters cho Controller
     public JTable getTable() { return tablePanel.getTable(); }
     public DefaultTableModel getTableModel() { return (DefaultTableModel) tablePanel.getTable().getModel(); }

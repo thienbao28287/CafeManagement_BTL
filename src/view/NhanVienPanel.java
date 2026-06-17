@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class NhanVienPanel extends JPanel {
 
@@ -26,7 +27,7 @@ public class NhanVienPanel extends JPanel {
         setBorder(new EmptyBorder(20, 20, 20, 20));
         
         // Khởi tạo giao diện
-        add(new HeaderPanel("🧑‍💼 Nhân viên", "Quản lý nhân viên", 
+        add(new HeaderPanel("Nhân viên", "Quản lý nhân viên", 
             new Color(59, 26, 8), new Color(124, 58, 14), new Color(180, 83, 9)), 
             BorderLayout.NORTH);
         
@@ -37,12 +38,27 @@ public class NhanVienPanel extends JPanel {
         this.controller.loadData();
         this.controller.initEvents(); 
     }
-
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        LinearGradientPaint gradient = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(getWidth(), getHeight()),
+                new float[]{0f, 0.5f, 1f},
+                new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
+        );
+        g2.setPaint(gradient);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
     // 3. Khởi tạo Table và Form
     private void initTableAndForm() {
         String[] columns = {"MÃ NV", "TÊN NV", "SĐT", "EMAIL", "CHỨC VỤ", "LƯƠNG", "GIỚI TÍNH", "ĐỊA CHỈ"};
         tablePanel = new TablePanel(columns, "Tìm kiếm nhân viên...");
-
+        tablePanel.setOpaque(false);
         // Khởi tạo các Input
         txtMa = UIFactory.createTextField();
         txtTen = UIFactory.createTextField();
@@ -63,10 +79,10 @@ public class NhanVienPanel extends JPanel {
             new InputGroup("Giới tính", cbGioiTinh),
             new InputGroup("Địa chỉ", txtDiaChi)
         };
-
+        
         formPanel = new FormPanel("Thông tin nhân viên", inputs, 
-            ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220), 
-            ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220));
+            ImageUtil.getScaledIcon(getClass(), "/img/NV01.png", 220, 220), 
+            ImageUtil.getScaledIcon(getClass(), "/img/NV02.png", 220, 220));
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);

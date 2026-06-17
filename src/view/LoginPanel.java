@@ -72,6 +72,7 @@ public class LoginPanel extends JPanel {
 
         add(btnLogin, gbc);
     }
+    
 
     // Hàm nhận Controller từ tầng Main truyền vào (Dependency Injection)
     public void setController(LoginController controller) {

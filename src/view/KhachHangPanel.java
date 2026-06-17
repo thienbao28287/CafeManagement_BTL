@@ -21,7 +21,7 @@ public class KhachHangPanel extends JPanel {
         setOpaque(true);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        add(new HeaderPanel("👥 Khách hàng", "Quản lý danh sách khách hàng", 
+        add(new HeaderPanel("Khách hàng", "Quản lý danh sách khách hàng", 
             new Color(59, 26, 8), new Color(124, 58, 14), new Color(180, 83, 9)), 
             BorderLayout.NORTH);
 
@@ -41,8 +41,8 @@ public class KhachHangPanel extends JPanel {
         };
 
         formPanel = new FormPanel("Thông tin chi tiết khách hàng", inputs, 
-            ImageUtil.getScaledIcon(getClass(), "/img/leftNV.png", 220, 220), 
-            ImageUtil.getScaledIcon(getClass(), "/img/rightNV.png", 220, 220));
+            ImageUtil.getScaledIcon(getClass(), "/img/KH01.png", 220, 220), 
+            ImageUtil.getScaledIcon(getClass(), "/img/KH02.png", 220, 220));
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);
@@ -73,19 +73,25 @@ public class KhachHangPanel extends JPanel {
                 new float[]{0f, 0.5f, 1f},
                 new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
         );
-        
         g2.setPaint(gradient);
         g2.fillRect(0, 0, getWidth(), getHeight());
         g2.dispose();
     }
-
+    
     private void fillFormFromSelectedRow() {
         int row = tablePanel.getTable().getSelectedRow();
-        txtMa.setText(tablePanel.getTable().getValueAt(row, 0).toString());
-        txtTen.setText(tablePanel.getTable().getValueAt(row, 1).toString());
-        txtSdt.setText(tablePanel.getTable().getValueAt(row, 2).toString());
-        txtDiaChi.setText(tablePanel.getTable().getValueAt(row, 3).toString());
+        
+        txtMa.setText(getValue(row, 0));
+        txtTen.setText(getValue(row, 1));
+        txtSdt.setText(getValue(row, 2));
+        txtDiaChi.setText(getValue(row, 3));
+        
         txtMa.setEditable(false);
+    }
+
+    private String getValue(int row, int col) {
+        Object value = tablePanel.getTable().getValueAt(row, col);
+        return (value == null) ? "" : value.toString();
     }
 
     public void clearForm() {

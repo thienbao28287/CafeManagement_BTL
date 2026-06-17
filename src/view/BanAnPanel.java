@@ -25,7 +25,7 @@ public class BanAnPanel extends JPanel {
         setOpaque(true);
         setBorder(new EmptyBorder(20, 20, 20, 20));
         
-        add(new HeaderPanel("🪑 Bàn ăn", "Quản lý bàn ăn", 
+        add(new HeaderPanel("Bàn ăn", "Quản lý bàn ăn", 
             new Color(59, 26, 8), new Color(124, 58, 14), new Color(180, 83, 9)), 
             BorderLayout.NORTH);
         
@@ -70,7 +70,9 @@ public class BanAnPanel extends JPanel {
             new InputGroup("Vị trí", txtViTri)
         };
 
-        formPanel = new FormPanel("Thông tin bàn ăn", inputs, null, null);
+        formPanel = new FormPanel("Thông tin bàn ăn", inputs, 
+        	    ImageUtil.getScaledIcon(getClass(), "/img/ba01.png", 220, 220), 
+        	    ImageUtil.getScaledIcon(getClass(), "/img/ba02.png", 220, 220));
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);

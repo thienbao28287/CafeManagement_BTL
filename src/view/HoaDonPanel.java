@@ -5,10 +5,14 @@ import components.HeaderPanel;
 import components.TablePanel;
 import controller.HoaDonController;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
 import model.ChiTietHoaDon;
 
 public class HoaDonPanel extends JPanel {
@@ -27,7 +31,7 @@ public class HoaDonPanel extends JPanel {
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
         add(new HeaderPanel(
-                "🧾 Hóa đơn",
+                "Hóa đơn",
                 "Quản lý danh sách và chi tiết hóa đơn bán hàng",
                 new Color(120, 53, 4),
                 new Color(194, 65, 12),
@@ -54,6 +58,22 @@ public class HoaDonPanel extends JPanel {
         btnXoa.setForeground(Color.WHITE);
         
         return leftTablePanel;
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        LinearGradientPaint gradient = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(getWidth(), getHeight()),
+                new float[]{0f, 0.5f, 1f},
+                new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
+        );
+        g2.setPaint(gradient);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
     }
     @Override
     public void addNotify() {
@@ -101,20 +121,17 @@ public class HoaDonPanel extends JPanel {
 
         gbc.gridy = 1; gbc.gridwidth = 2;
         topInfoPanel.add(Box.createVerticalStrut(8), gbc);
-
         gbc.gridwidth = 1; gbc.weightx = 0.5;
 
         JLabel lblMaHoaDon = new JLabel("Mã hóa đơn: ");
         lblMaHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblMaHoaDon.setForeground(Color.GRAY);
         lblMaHoaDonValue = new JLabel("-");
-        lblMaHoaDonValue.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
+        lblMaHoaDonValue.setFont(new Font("Segoe UI", Font.BOLD, 12));
         JPanel pnlMaHD = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         pnlMaHD.setOpaque(false);
         pnlMaHD.add(lblMaHoaDon);
         pnlMaHD.add(lblMaHoaDonValue);
-
         gbc.gridx = 0; gbc.gridy = 2;
         topInfoPanel.add(pnlMaHD, gbc);
 
@@ -123,31 +140,26 @@ public class HoaDonPanel extends JPanel {
         lblMaBan.setForeground(Color.GRAY);
         lblMaBanValue = new JLabel("-");
         lblMaBanValue.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
         JPanel pnlMaBan = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         pnlMaBan.setOpaque(false);
         pnlMaBan.add(lblMaBan);
         pnlMaBan.add(lblMaBanValue);
-
         gbc.gridx = 1; gbc.gridy = 2;
         topInfoPanel.add(pnlMaBan, gbc);
 
         JLabel lblTrangThai = new JLabel("Trạng thái: ");
         lblTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblTrangThai.setForeground(Color.GRAY);
-
         lblTrangThaiValue = new JLabel(" - ");
         lblTrangThaiValue.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblTrangThaiValue.setForeground(new Color(22, 163, 74));
         lblTrangThaiValue.setBackground(new Color(220, 252, 231));
         lblTrangThaiValue.setOpaque(true);
         lblTrangThaiValue.setBorder(BorderFactory.createLineBorder(new Color(187, 247, 208), 1, true));
-
         JPanel pnlTrangThai = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         pnlTrangThai.setOpaque(false);
         pnlTrangThai.add(lblTrangThai);
         pnlTrangThai.add(lblTrangThaiValue);
-
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
         topInfoPanel.add(pnlTrangThai, gbc);
 
@@ -160,22 +172,50 @@ public class HoaDonPanel extends JPanel {
         lblDanhSachMon.setForeground(new Color(60, 60, 60));
         centerGridPanel.add(lblDanhSachMon, BorderLayout.NORTH);
 
-        String[] itemColumns = {"MÃ SP", "TÊN MÓN", "SỐ LƯỢNG", "ĐƠN GIÁ", "THÀNH TIỀN"};
+        String[] itemColumns = {"TÊN MÓN", "SỐ LƯỢNG", "ĐƠN GIÁ", "THÀNH TIỀN"};
         modelChiTietMon = new DefaultTableModel(itemColumns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            @Override public boolean isCellEditable(int row, int column) { return false; }
         };
+        
         tableChiTietMon = new JTable(modelChiTietMon);
         tableChiTietMon.setRowHeight(32);
-        tableChiTietMon.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        tableChiTietMon.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        tableChiTietMon.getTableHeader().setBackground(Color.WHITE);
-        tableChiTietMon.setGridColor(new Color(240, 240, 240));
-        tableChiTietMon.setShowVerticalLines(false);
+        tableChiTietMon.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        tableChiTietMon.setShowGrid(false);
+        tableChiTietMon.setIntercellSpacing(new Dimension(0, 0));
+        
+        JTableHeader header = tableChiTietMon.getTableHeader();
+        header.setPreferredSize(new Dimension(0, 40));
+        header.setReorderingAllowed(false);
+        header.setBorder(null);
+        header.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel lbl = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                lbl.setBackground(new Color(247, 247, 253));
+                lbl.setForeground(new Color(139, 143, 199));
+                lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
+                lbl.setHorizontalAlignment(SwingConstants.CENTER);
+                lbl.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+                lbl.setOpaque(true);
+                return lbl;
+            }
+        });
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < tableChiTietMon.getColumnCount(); i++) {
+            tableChiTietMon.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        tableChiTietMon.getColumnModel().getColumn(0).setPreferredWidth(150);
+        tableChiTietMon.getColumnModel().getColumn(1).setPreferredWidth(50);
+        tableChiTietMon.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tableChiTietMon.getColumnModel().getColumn(3).setPreferredWidth(80);
+
         JScrollPane scrollPaneDetail = new JScrollPane(tableChiTietMon);
-        scrollPaneDetail.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
+        scrollPaneDetail.setBorder(null);
+        scrollPaneDetail.setBorder(BorderFactory.createEmptyBorder()); // Bỏ viền của ScrollPane
+        scrollPaneDetail.setViewportBorder(BorderFactory.createEmptyBorder()); // Bỏ viền của vùng hiển thị
         scrollPaneDetail.getViewport().setBackground(Color.WHITE);
         centerGridPanel.add(scrollPaneDetail, BorderLayout.CENTER);
         rightDetailCard.add(centerGridPanel, BorderLayout.CENTER);
@@ -191,6 +231,7 @@ public class HoaDonPanel extends JPanel {
         bottomPanel.add(lblTongTien);
         bottomPanel.add(lblTongTienValue);
         rightDetailCard.add(bottomPanel, BorderLayout.SOUTH);
+
         return rightDetailCard;
     }
 
@@ -205,7 +246,6 @@ public class HoaDonPanel extends JPanel {
         if (chiTietHoaDonList != null) {
             for (ChiTietHoaDon chiTietHoaDon : chiTietHoaDonList) {
                 modelChiTietMon.addRow(new Object[]{
-                        chiTietHoaDon.getMaSanPham(),
                         chiTietHoaDon.getTenSanPham(),
                         chiTietHoaDon.getSoLuong(),
                         util.CurrencyUtil.formatCurrency(chiTietHoaDon.getDonGia()),

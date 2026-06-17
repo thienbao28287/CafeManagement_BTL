@@ -6,6 +6,8 @@ import components.InputGroup;
 import components.TablePanel;
 import controller.DatHangController;
 import java.awt.*;
+import java.awt.geom.Point2D;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -29,7 +31,7 @@ public class DatHangPanel extends JPanel {
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
         add(new HeaderPanel(
-                "📋 Đặt hàng",
+                "Đặt hàng",
                 "Tạo và quản lý đơn hàng",
                 new Color(120, 53, 4),
                 new Color(194, 65, 12),
@@ -47,7 +49,22 @@ public class DatHangPanel extends JPanel {
         controller.loadData();
         controller.initEvents();
     }
-
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        LinearGradientPaint gradient = new LinearGradientPaint(
+                new Point2D.Double(0, 0),
+                new Point2D.Double(getWidth(), getHeight()),
+                new float[]{0f, 0.5f, 1f},
+                new Color[]{new Color(250, 246, 241), new Color(254, 249, 243), new Color(255, 250, 245)}
+        );
+        g2.setPaint(gradient);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.dispose();
+    }
 private JPanel createLeftOrderForm() {
     JPanel leftPanel = new JPanel() {
         @Override

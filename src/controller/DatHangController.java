@@ -15,6 +15,7 @@ import service.*;
 import util.*;
 import view.DatHangPanel;
 import view.HoaDonPanel;
+import view.SanPhamPanel;
 
 public class DatHangController {
     private final DatHangPanel view;
@@ -23,7 +24,8 @@ public class DatHangController {
     private final ISanPhamService sanPhamService = new SanPhamServiceImpl();
     private final IHoaDonService hoaDonService = new HoaDonServiceImpl();
     private final IHoaDonRepository hoaDonRepository = new HoaDonRepositoryImpl();
-
+    private ISanPhamRepository sanPhamRepo = new SanPhamRepositoryImpl();
+    private SanPhamPanel sanPhamPanel;
     public DatHangController(DatHangPanel view) {
         this.view = view;
     }
@@ -103,10 +105,22 @@ public class DatHangController {
             String item = selectedItem == null ? "" : selectedItem.toString();
             if (item.startsWith("-- Chọn")) throw new InvalidInputException("Vui lòng chọn món!");
             String[] parts = item.split(" - ");
+            
+            // 1. Thực hiện service (đã bao gồm logic trừ kho trong DB)
             service.addOrUpdate(new ChiTietHoaDon(maHoaDon, parts[0].trim(), parts[1].trim(), soLuong, Double.parseDouble(parts[2].replace(",", ""))));
+            
+            // 2. Cập nhật giao diện Hóa Đơn hiện tại
             capNhatTongTienHoaDon(maHoaDon);
             searchOrderItems(maHoaDon);
             if (hoaDonPanel != null) hoaDonPanel.refreshData();
+            
+            // --- THÊM PHẦN CẬP NHẬT DANH SÁCH SẢN PHẨM Ở ĐÂY ---
+            // Giả sử bạn có biến sanPhamPanel đã được khởi tạo trong controller
+            if (this.sanPhamPanel != null) {
+                this.sanPhamPanel.refreshData(); // Gọi hàm bạn vừa tạo ở bước 1
+            }
+            // ---------------------------------------------------
+            
         } catch (Exception e) {
             ExceptionHandler.handle(view, e);
         }
@@ -143,9 +157,18 @@ public class DatHangController {
 
     private void ensureInvoiceHeaderExists(String maHoaDon) throws Exception {
         if (hoaDonService.getHoaDonById(maHoaDon) != null) return;
+        
         String maBan = view.getTxtMaBan().getText().trim();
+        // 1. Lấy mã khách hàng từ ô nhập liệu trong view
+        String maKHInput = view.getTxtMaKhachHang().getText().trim();
+        
         if (!isBanHopLe(maBan)) throw new NotFoundException("Mã bàn không tồn tại!");
-        hoaDonService.addHoaDon(new HoaDon(maHoaDon, 0, "Đang phục vụ", new java.util.Date(), "NV01", null, maBan));
+        
+        // 2. Nếu trống thì để là "KH_VANGLAI", nếu có thì lấy giá trị nhập vào
+        String maKH = (maKHInput.isEmpty()) ? "KH_VANGLAI" : maKHInput;
+        
+        // 3. Truyền 'maKH' vào constructor thay vì 'null'
+        hoaDonService.addHoaDon(new HoaDon(maHoaDon, 0, "Đang phục vụ", new java.util.Date(), "NV01", maKH, maBan));
     }
 
     private boolean isBanHopLe(String maBan) throws DatabaseException {
@@ -215,5 +238,8 @@ public class DatHangController {
 
     private void removeListeners(AbstractButton button) {
         for (ActionListener al : button.getActionListeners()) button.removeActionListener(al);
+    }
+    public void setSanPhamPanel(SanPhamPanel sanPhamPanel) {
+        this.sanPhamPanel = sanPhamPanel;
     }
 }

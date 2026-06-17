@@ -1,7 +1,6 @@
 package view;
 
 import components.StatusCard;
-import util.ImageUtil;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -44,7 +43,6 @@ public class TrangChuPanel extends JPanel {
         add(createRevenueRow(), gbc);
     }
 
-    // Đổ nền trực tiếp vào TrangChuPanel thay vì dùng BasePanel
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -62,7 +60,7 @@ public class TrangChuPanel extends JPanel {
         g2.dispose();
     }
 
-   private JPanel createWelcomeBanner() {
+    private JPanel createWelcomeBanner() {
         JPanel banner = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -79,48 +77,66 @@ public class TrangChuPanel extends JPanel {
                 super.paintComponent(g);
             }
         };
+        
         banner.setOpaque(false);
-        banner.setLayout(new BorderLayout(20, 0)); // Khoảng cách 20px giữa text và ảnh
+        banner.setLayout(new GridBagLayout());
         banner.setBorder(new EmptyBorder(20, 32, 20, 32));
-        banner.setPreferredSize(new Dimension(0, 180));
+        banner.setPreferredSize(new Dimension(0, 200));
 
-        // --- PHẦN NỘI DUNG (TRÁI) ---
-        JPanel leftTextPanel = new JPanel(new GridBagLayout());
-        leftTextPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0; gbc.anchor = GridBagConstraints.WEST; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
 
-        JLabel lblSub = new JLabel("☕ COFFEE SHOP");
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setOpaque(false);
+        leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel titleRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titleRow.setOpaque(false);
+        titleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        ImageIcon icon = new ImageIcon(getClass().getResource("/img/logo2.png"));
+        Image scaledSmall = icon.getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH);
+        titleRow.add(new JLabel(new ImageIcon(scaledSmall)));
+        
+        JLabel lblSub = new JLabel("COFFEE SHOP");
         lblSub.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblSub.setForeground(new Color(0xD2A06F)); 
-        gbc.gridy = 0; leftTextPanel.add(lblSub, gbc);
+        lblSub.setForeground(new Color(0xD2A06F));
+        titleRow.add(lblSub);
+        leftPanel.add(titleRow);
 
         JLabel lblWelcome = new JLabel("Chào mừng đến");
-        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        lblWelcome.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblWelcome.setForeground(Color.WHITE);
-        gbc.gridy = 1; gbc.insets = new Insets(4, 0, 0, 0);
-        leftTextPanel.add(lblWelcome, gbc);
+        lblWelcome.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.add(Box.createVerticalStrut(5));
+        leftPanel.add(lblWelcome);
 
         JLabel lblSystemName = new JLabel("Management System");
-        lblSystemName.setFont(new Font("Segoe UI", Font.BOLD, 30));
-        lblSystemName.setForeground(new Color(0xFCD34D)); 
-        gbc.gridy = 2; gbc.insets = new Insets(0, 0, 6, 0);
-        leftTextPanel.add(lblSystemName, gbc);
+        lblSystemName.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblSystemName.setForeground(new Color(0xFCD34D));
+        lblSystemName.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.add(lblSystemName);
 
-        JLabel lblDesc = new JLabel("<html>Hệ thống quản lý quán cà phê — quản lý khách hàng, nhân viên, bàn ăn<br>và đơn hàng một cách hiệu quả, chuyên nghiệp.</html>");
-        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblDesc.setForeground(new Color(0xDCDCDC)); 
-        gbc.gridy = 3; leftTextPanel.add(lblDesc, gbc);
+        JLabel lblDesc = new JLabel("<html>Hệ thống quản lý quán cà phê — quản lý khách hàng, nhân viên,<br> bàn ăn và đơn hàng một cách hiệu quả, chuyên nghiệp.</html>");
+        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblDesc.setForeground(new Color(0xE0E0E0));
+        lblDesc.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.add(Box.createVerticalStrut(8));
+        leftPanel.add(lblDesc);
 
-        banner.add(leftTextPanel, BorderLayout.CENTER); // Đặt nội dung vào giữa (bên trái)
+        gbc.gridx = 0; gbc.gridy = 0; 
+        gbc.weightx = 1.0; 
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        banner.add(leftPanel, gbc);
 
-        // --- PHẦN ẢNH (PHẢI) ---
-        // Thay đường dẫn "/images/coffee_banner.png" bằng ảnh thực tế của bạn
-        ImageIcon icon = new ImageIcon(getClass().getResource("/img/image3.png")); 
-        Image scaledImage = icon.getImage().getScaledInstance(202, 140, Image.SCALE_SMOOTH);
-        JLabel lblImage = new JLabel(new ImageIcon(scaledImage));
+        ImageIcon mainIcon = new ImageIcon(getClass().getResource("/img/image4.png")); 
+        Image scaledBig = mainIcon.getImage().getScaledInstance(180, 140, Image.SCALE_SMOOTH);
+        JLabel lblImage = new JLabel(new ImageIcon(scaledBig));
         
-        banner.add(lblImage, BorderLayout.EAST); // Đặt ảnh vào bên phải
+        gbc.gridx = 1; gbc.gridy = 0; 
+        gbc.weightx = 0; 
+        gbc.insets = new Insets(0, 20, 0, 0);
+        banner.add(lblImage, gbc);
 
         return banner;
     }
@@ -128,10 +144,12 @@ public class TrangChuPanel extends JPanel {
     private JPanel createOverviewRow() {
         JPanel row = new JPanel(new GridLayout(1, 4, 16, 0));
         row.setOpaque(false);
-        cardKhachHang = new StatusCard("Khách hàng", "1", null, new Color(180, 83, 9), Color.WHITE);
-        cardNhanVien = new StatusCard("Nhân viên", "7", null, new Color(120, 53, 4), Color.WHITE);
-        cardBanAn = new StatusCard("Bàn ăn", "1", null, new Color(234, 88, 12), Color.WHITE);
-        cardOrders = new StatusCard("Orders", "7", null, new Color(5, 150, 105), Color.WHITE);
+        
+        cardKhachHang = new StatusCard("Khách hàng", "0", getImg("/img/khachHang02.png"), new Color(180, 83, 9), Color.WHITE);
+        cardNhanVien = new StatusCard("Nhân viên", "0", getImg("/img/nhanVien02.png"), new Color(120, 53, 4), Color.WHITE);
+        cardBanAn = new StatusCard("Bàn ăn", "0", getImg("/img/banAn021.png"), new Color(234, 88, 12), Color.WHITE);
+        cardOrders = new StatusCard("Orders", "0", getImg("/img/hoaDon02.png"), new Color(5, 150, 105), Color.WHITE);
+        
         row.add(cardKhachHang); row.add(cardNhanVien); row.add(cardBanAn); row.add(cardOrders);
         return row;
     }
@@ -139,11 +157,33 @@ public class TrangChuPanel extends JPanel {
     private JPanel createRevenueRow() {
         JPanel row = new JPanel(new GridLayout(1, 4, 16, 0));
         row.setOpaque(false);
-        cardHomNay = new StatusCard("Hôm nay", "0 đ", null, new Color(0xA7F3D0), new Color(60,60,60));
-        cardThangNay = new StatusCard("Tháng này", "225.000 đ", null, new Color(0xFEF3C7), new Color(60,60,60));
-        cardTongDoanhThu = new StatusCard("Tổng doanh thu", "520.000 đ", null, new Color(0xFFEDD5), new Color(60,60,60));
-        cardOrdersDaTT = new StatusCard("Orders đã TT", "4", null, new Color(0xFEF9C3), new Color(60,60,60));
+        
+        cardHomNay = new StatusCard("Hôm nay", "0 đ", getImg(""), new Color(0xA7F3D0), new Color(60,60,60));
+        cardThangNay = new StatusCard("Tháng này", "0 đ", getImg(""), new Color(0xFEF3C7), new Color(60,60,60));
+        cardTongDoanhThu = new StatusCard("Tổng doanh thu", "0 đ", getImg(""), new Color(0xFFEDD5), new Color(60,60,60));
+        cardOrdersDaTT = new StatusCard("Orders đã TT", "0", getImg(""), new Color(0xFEF9C3), new Color(60,60,60));
+        
         row.add(cardHomNay); row.add(cardThangNay); row.add(cardTongDoanhThu); row.add(cardOrdersDaTT);
         return row;
+    }
+
+    private Image getImg(String path) {
+        try {
+            return new ImageIcon(getClass().getResource(path)).getImage();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void updateStats(String khachHang, String nhanVien, String banAn, String orders,
+                            String homNay, String thangNay, String tongDoanhThu, String ordersDaTT) {
+        cardKhachHang.setValue(khachHang);
+        cardNhanVien.setValue(nhanVien);
+        cardBanAn.setValue(banAn);
+        cardOrders.setValue(orders);
+        cardHomNay.setValue(homNay);
+        cardThangNay.setValue(thangNay);
+        cardTongDoanhThu.setValue(tongDoanhThu);
+        cardOrdersDaTT.setValue(ordersDaTT);
     }
 }

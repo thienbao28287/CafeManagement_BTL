@@ -2,6 +2,9 @@ package components;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import com.formdev.flatlaf.FlatClientProperties;
+
 import java.awt.*;
 
 public class DashboardBanAnPanel extends JPanel {
@@ -16,18 +19,22 @@ public class DashboardBanAnPanel extends JPanel {
         card.setBorder(new EmptyBorder(20, 20, 20, 20));
         card.setPreferredSize(new Dimension(250, 0));
 
-        JLabel title = new JLabel("DASHBOARD");
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Căn giữa
+        titlePanel.setOpaque(false); // Đảm bảo trong suốt để giữ style card
+        JLabel title = new JLabel("Thống kê");
         title.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        title.setForeground(new Color(59, 26, 8));
-        card.add(title, BorderLayout.NORTH);
+        title.putClientProperty(FlatClientProperties.STYLE, "font: bold 15; foreground: #323232");
+        titlePanel.add(title); // Thêm nhãn vào panel căn giữa
+
+        card.add(titlePanel, BorderLayout.NORTH); // Thêm panel vào card
 
         JPanel statsPanel = new JPanel(new GridLayout(4, 1, 12, 12));
         statsPanel.setOpaque(false);
 
-        lblTong = createItemLabel("Tổng bàn: 0", "/img/image3.png");
-        lblTrong = createItemLabel("Bàn trống: 0", "/img/image3.png");
-        lblDangDung = createItemLabel("Đang dùng: 0", "/img/image3.png");
-        lblDaDat = createItemLabel("Đã đặt: 0", "/img/image3.png");
+        lblTong = createItemLabel("Tổng bàn: 0", "/img/banBlack.png");
+        lblTrong = createItemLabel("Bàn trống: 0", "/img/banBlack.png");
+        lblDangDung = createItemLabel("Đang dùng: 0", "/img/banBlack.png");
+        lblDaDat = createItemLabel("Đã đặt: 0", "/img/banBlack.png");
 
         statsPanel.add(lblTong);
         statsPanel.add(lblTrong);
@@ -40,7 +47,8 @@ public class DashboardBanAnPanel extends JPanel {
 
     private JLabel createItemLabel(String text, String iconPath) {
         JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        
+        lbl.putClientProperty(FlatClientProperties.STYLE, "font: bold 12; foreground: #323232");
         
         try {
             ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
@@ -51,11 +59,11 @@ public class DashboardBanAnPanel extends JPanel {
         }
 
         lbl.setOpaque(true);
-        lbl.setBackground(new Color(248, 249, 252));
-        lbl.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(235, 235, 235)),
-                new EmptyBorder(10, 12, 10, 12)
-        ));
+        lbl.setBackground(new Color(255, 255, 255));
+        
+        // Bỏ viền và thêm khoảng cách (padding)
+        lbl.setBorder(new EmptyBorder(10, 15, 10, 15));
+        
         return lbl;
     }
 

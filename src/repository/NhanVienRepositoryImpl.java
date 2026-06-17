@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.*;
 
 public class NhanVienRepositoryImpl implements INhanVienRepository {
-
+	private Connection conn;
     // --- 1. CÁC PHƯƠNG THỨC CRUD (Create, Read, Update, Delete) ---
 
     @Override

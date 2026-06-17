@@ -1,6 +1,7 @@
 package view;
 
 import controller.DatHangController;
+import controller.TrangChuController;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,6 +16,7 @@ public class MainFrame extends JFrame {
     // Lưu trữ các panel để có thể truy xuất hoặc làm mới nếu cần
     private DatHangPanel datHangPanel;
     private HoaDonPanel hoaDonPanel;
+    private TrangChuController trangChuController;
 
     public MainFrame() {
         setTitle("COFFEE SHOP MANAGEMENT SYSTEM");
@@ -50,7 +52,10 @@ public class MainFrame extends JFrame {
         datHangController.initEvents();
 
         // Nạp các phân hệ chức năng vào CardLayout
-        innerContentPanel.add(new TrangChuPanel(), "PANEL_TRANG_CHU");
+        TrangChuPanel trangChuPanel = new TrangChuPanel();
+        this.trangChuController = new TrangChuController(trangChuPanel);
+        trangChuController.loadData();
+        innerContentPanel.add(trangChuPanel, "PANEL_TRANG_CHU");
         innerContentPanel.add(new KhachHangPanel(), "PANEL_KHACH_HANG");
         innerContentPanel.add(new NhanVienPanel(), "PANEL_NHAN_VIEN");
         innerContentPanel.add(new SanPhamPanel(), "PANEL_SAN_PHAM");
@@ -83,5 +88,8 @@ public class MainFrame extends JFrame {
 
     public void switchInnerCard(String cardName) {
         innerCardLayout.show(innerContentPanel, cardName);
+        if ("PANEL_TRANG_CHU".equals(cardName) && trangChuController != null) {
+            trangChuController.loadData();
+        }
     }
 }

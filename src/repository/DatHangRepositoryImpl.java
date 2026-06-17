@@ -74,4 +74,38 @@ public class DatHangRepositoryImpl implements IDatHangRepository {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
+
+    @Override
+    public ChiTietHoaDon getById(String maHoaDon, String maSanPham) {
+        // Sửa câu SQL thành JOIN bảng SanPham
+        String sql = "SELECT cthd.*, sp.TenSanPham " +
+                     "FROM ChiTietHoaDon cthd " +
+                     "JOIN SanPham sp ON cthd.MaSanPham = sp.MaSanPham " +
+                     "WHERE cthd.MaHoaDon = ? AND cthd.MaSanPham = ?";
+                     
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, maHoaDon);
+            ps.setString(2, maSanPham);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs); 
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }    
+    private ChiTietHoaDon mapRow(ResultSet rs) throws SQLException {
+        return new ChiTietHoaDon(
+            rs.getString("MaHoaDon"),
+            rs.getString("MaSanPham"),
+            rs.getString("TenSanPham"),
+            rs.getInt("SoLuong"),
+            rs.getDouble("DonGia")
+        );
+    }
 }
