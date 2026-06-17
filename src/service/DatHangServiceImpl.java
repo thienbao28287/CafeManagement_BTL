@@ -18,6 +18,11 @@ public class DatHangServiceImpl implements IDatHangService {
         return repo.findByMaHoaDon(maHoaDon);
     }
 
+
+    @Override
+    public List<ChiTietHoaDon> searchByMaSanPham(String maSanPham) {
+        return repo.searchByMaSanPham(maSanPham);
+    }
   @Override
 public void addOrUpdate(ChiTietHoaDon cthd) {
     Connection conn = null;
@@ -89,4 +94,7 @@ public void addOrUpdate(ChiTietHoaDon cthd) {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }}
+    }	
+    
+    
+}

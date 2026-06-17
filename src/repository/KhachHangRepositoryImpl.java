@@ -30,14 +30,23 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
     @Override
     public List<KhachHang> findAll() {
         List<KhachHang> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang";
+
+        String sql = "SELECT * FROM KhachHang WHERE MaKhachHang != 'KH_VANGLAI'";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
+                System.out.println("Repo: " + rs.getString("MaKhachHang"));
+
                 list.add(mapRowToKhachHang(rs));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return list;
     }
 
@@ -72,18 +81,31 @@ public class KhachHangRepositoryImpl implements IKhachHangRepository {
     @Override
     public List<KhachHang> search(String keyword) {
         List<KhachHang> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang WHERE MaKhachHang LIKE ? OR TenKhachHang LIKE ?";
+
+        String sql = "SELECT * FROM KhachHang WHERE (MaKhachHang LIKE ? OR TenKhachHang LIKE ?) AND MaKhachHang != 'KH_VANGLAI'";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
             String pattern = "%" + keyword + "%";
             ps.setString(1, pattern);
             ps.setString(2, pattern);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapRowToKhachHang(rs));
+
+                while (rs.next()) {
+
+                    // DEBUG
+                    System.out.println("KH: " + rs.getString("MaKhachHang"));
+
+                    list.add(mapRowToKhachHang(rs));
+                }
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return list;
     }
 

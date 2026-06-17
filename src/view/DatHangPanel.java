@@ -160,7 +160,7 @@ private JPanel createLeftOrderForm() {
 
     private JPanel createRightSelectedItems() {
         String[] columns = {"MÃ HĐ", "MÃ SP", "TÊN MÓN", "SỐ LƯỢNG", "ĐƠN GIÁ", "THÀNH TIỀN"};
-        tablePanel = new TablePanel(columns, "Tìm kiếm mã đơn hàng...");
+        tablePanel = new TablePanel(columns, "Tìm kiếm mã sản phẩm...");
 
         JPanel rightWrapper = new JPanel(new BorderLayout(0, 10));
         rightWrapper.setOpaque(false);

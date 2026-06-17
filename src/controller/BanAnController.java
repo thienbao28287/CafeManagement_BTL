@@ -28,6 +28,16 @@ public class BanAnController {
             view.getTablePanel().getTxtTimKiem().setText("");
             loadData();
         });
+
+        // Sự kiện tìm kiếm
+        view.getTablePanel().getBtnSearch().addActionListener(e -> {
+            searchBan(view.getTablePanel().getTxtTimKiem().getText().trim());
+        });
+
+        // Tìm kiếm khi nhấn Enter trong ô tìm kiếm
+        view.getTablePanel().getTxtTimKiem().addActionListener(e -> {
+            searchBan(view.getTablePanel().getTxtTimKiem().getText().trim());
+        });
     }
 
     // ======================
@@ -106,7 +116,7 @@ public class BanAnController {
         try {
 
             service.update(
-                    collectDataFromView()
+collectDataFromView()
             );
 
             finalizeAction(
@@ -242,7 +252,7 @@ public class BanAnController {
                         .getText()
         );
     }
-   private void updateDashboard() {
+private void updateDashboard() {
 
     int tong = 0;
     int trong = 0;
